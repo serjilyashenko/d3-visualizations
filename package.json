@@ -1,0 +1,13 @@
+{
+  "name": "d3-visualizations",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "http-server": "^0.11.1",
+    "static-server": "^2.2.1"
+  },
+  "scripts": {
+    "start": "http-server ./src"
+  }
+}
