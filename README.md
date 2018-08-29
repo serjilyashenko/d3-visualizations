@@ -46,3 +46,5 @@ or
 ```bush
 npm start
 ```
+
+Visit `localhost:8080`
