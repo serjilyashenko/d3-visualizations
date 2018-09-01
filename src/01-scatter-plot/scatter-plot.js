@@ -14,11 +14,12 @@
   const scatterPlot = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
   const rawData = await d3.json('./data.json');
-  const data = rawData.map(d => ({
-    ...d,
-    profit: Number(d.profit),
-    revenue: Number(d.revenue)
-  }));
+  const data = rawData.map(d =>
+    Object.assign({}, d, {
+      profit: Number(d.profit),
+      revenue: Number(d.revenue)
+    })
+  );
 
   const xScale = d3
     .scaleBand()
