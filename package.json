@@ -1,11 +1,23 @@
 {
   "name": "d3-visualizations",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "description": "Visualization Samples Using D3 library",
+  "engines": {
+    "node": "8.11.4"
+  },
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/node-js-getting-started"
+  },
+  "keywords": [
+    "d3",
+    "visualization",
+    "diagrams"
+  ],
   "license": "MIT",
   "dependencies": {
-    "http-server": "^0.11.1",
-    "static-server": "^2.2.1"
+    "http-server": "0.11.1"
   },
   "scripts": {
     "start": "http-server ./src"
