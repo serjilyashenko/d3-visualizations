@@ -114,7 +114,7 @@
       .attr('cx', d => xScale(d.income))
       .attr('cy', d => yScaleReverse(d.life_exp))
       .merge(circles)
-      .transition(d3.transition().duration(150))
+      .transition(d3.transition().duration(100))
       .attr('stroke', 'black')
       .attr('r', d => rScale(d.population))
       .attr('cx', d => xScale(d.income))
@@ -132,5 +132,5 @@
     } else {
       index++;
     }
-  }, 150);
+  }, 100);
 })();

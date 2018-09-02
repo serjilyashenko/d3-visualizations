@@ -13,7 +13,8 @@ Application test drive is [here](https://d3visualizations.herokuapp.com/).
 ## Table of Contents
 
 - [Installation](#instalation)
-- [Start](#start)
+- [Production Mode](#production_mode)
+- [Development Mode](#development_mode)
 
 ## Installation
 
@@ -37,16 +38,34 @@ or
 npm install
 ```
 
-## Start
+## Production Mode
+
+It is necessary pass `ENV=production`.
 
 ```bush
+yarn gulp:build
 yarn start
 ```
 
 or
 
 ```bush
+npm run gulp:build
 npm start
 ```
 
+You also can use `yarn gulp` instead of script `gulp:build`
+
 Visit `localhost:8080`
+
+## Development Mode
+
+```
+yarn dev
+```
+
+or
+
+```
+npm run dev
+```
