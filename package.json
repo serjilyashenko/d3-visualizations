@@ -18,6 +18,7 @@
   "license": "MIT",
   "scripts": {
     "start": "http-server ./dist",
+    "postinstall": "gulp",
     "dev": "gulp",
     "gulp:build": "gulp"
   },
