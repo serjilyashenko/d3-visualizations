@@ -1,13 +1,13 @@
 (async function() {
-  const margin = { left: 100, top: 10, right: 10, bottom: 100 };
-  const canvasWidth = 600;
+  const chartArea = d3.select('#chart-area');
+  const canvasWidth = chartArea.node().offsetWidth;
   const canvasHeight = 400;
+  const margin = { left: 100, top: 20, right: 50, bottom: 100 };
   const width = canvasWidth - margin.left - margin.right;
   const height = canvasHeight - margin.top - margin.bottom;
   const t = d3.transition().duration(1000);
 
-  const svg = d3
-    .select('#chart-area')
+  const svg = chartArea
     .append('svg')
     .attr('width', canvasWidth)
     .attr('height', canvasHeight);
@@ -115,6 +115,7 @@
       .attr('cy', d => yScaleReverse(d.life_exp))
       .merge(circles)
       .transition(d3.transition().duration(100))
+      .ease(d3.easeLinear)
       .attr('stroke', 'black')
       .attr('r', d => rScale(d.population))
       .attr('cx', d => xScale(d.income))
