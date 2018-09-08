@@ -34,7 +34,7 @@
   const rScale = d3.scaleLinear().range([4, 80]);
 
   // Color-Axis
-  const colorScale = d3.scaleOrdinal(d3.schemePaired);
+  const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
   // X-Axis-Label
   gapMinder
@@ -73,7 +73,9 @@
   const maxIncome = Math.ceil(d3.max(maxIncomeByYears) / 10) * 10;
   const maxPopulationByYears = data.map(it => d3.max(it.countries, d => d.population));
   const maxPopulation = d3.max(maxPopulationByYears);
-  const countries = data[0].countries.map(d => d.country);
+  const continents = data[0].countries
+    .map(d => d.continent)
+    .reduce((res, d) => (res.includes(d) ? res : [...res, d]), []);
 
   const initialDraw = () => {
     xScale.domain([300, maxIncome]);
@@ -89,7 +91,7 @@
 
     rScale.domain([0, maxPopulation]);
 
-    colorScale.domain(countries);
+    colorScale.domain(continents);
   };
 
   initialDraw();
@@ -97,6 +99,7 @@
   await new Promise(resolve => setTimeout(() => resolve(), 750));
 
   const update = data => {
+    // TODO: optimize this. It is enough to filter ones.
     const countries = data.countries
       .filter(country => country.population)
       .filter(country => country.income)
@@ -120,7 +123,7 @@
       .attr('r', d => rScale(d.population))
       .attr('cx', d => xScale(d.income))
       .attr('cy', d => yScaleReverse(d.life_exp))
-      .attr('fill', d => colorScale(d.country));
+      .attr('fill', d => colorScale(d.continent));
   };
 
   update(data[0]);
