@@ -1,8 +1,13 @@
+/**
+ * Creates gapminder diagram
+ *
+ * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
+ */
 (async function() {
   const chartArea = d3.select('#chart-area');
   const canvasWidth = chartArea.node().offsetWidth;
-  const canvasHeight = 400;
-  const margin = { left: 100, top: 20, right: 50, bottom: 100 };
+  const canvasHeight = 500;
+  const margin = { left: 100, top: 50, right: 50, bottom: 100 };
   const width = canvasWidth - margin.left - margin.right;
   const height = canvasHeight - margin.top - margin.bottom;
   const t = d3.transition().duration(1000);
@@ -42,7 +47,6 @@
     .attr('x', width / 2)
     .attr('y', height + 40)
     .attr('text-anchor', 'middle')
-    .attr('font-family', 'sans-serif')
     .text('GDP Per Capita ($)');
 
   // Y-Axis-Label
@@ -52,7 +56,6 @@
     .attr('y', -40)
     .attr('transform', 'rotate(-90)')
     .attr('text-anchor', 'middle')
-    .attr('font-family', 'sans-serif')
     .text('Life Expectancy (Years)');
 
   // Year Mark
@@ -61,9 +64,11 @@
     .attr('x', width)
     .attr('y', height - 10)
     .attr('text-anchor', 'end')
-    .attr('font-family', 'sans-serif')
     .attr('font-size', '40px')
     .attr('fill', '#a1a0a1');
+
+  // Legend
+  const legend = gapMinder.append('g').attr('transform', `translate(${width - 10}, ${height - 120})`);
 
   // Data
   const data = await d3.json('./data.json');
@@ -76,6 +81,34 @@
   const continents = data[0].countries
     .map(d => d.continent)
     .reduce((res, d) => (res.includes(d) ? res : [...res, d]), []);
+
+  /**
+   * Render Continent Legend
+   *
+   * @param {Array<string>} continents
+   */
+  const renderLegend = continents => {
+    const legendRows = legend
+      .selectAll('g')
+      .data(continents)
+      .enter()
+      .append('g')
+      .attr('transform', (d, i) => `translate(0,${i * 20})`);
+
+    legendRows
+      .append('rect')
+      .attr('width', 10)
+      .attr('height', 10)
+      .attr('fill', colorScale);
+
+    legendRows
+      .append('text')
+      .attr('class', 'continent-label')
+      .attr('x', -10)
+      .attr('y', 10)
+      .attr('text-anchor', 'end')
+      .text(d => d);
+  };
 
   const initialDraw = () => {
     xScale.domain([300, maxIncome]);
@@ -92,10 +125,13 @@
     rScale.domain([0, maxPopulation]);
 
     colorScale.domain(continents);
+
+    renderLegend(continents);
   };
 
   initialDraw();
 
+  // Waiting until initialDraw finish
   await new Promise(resolve => setTimeout(() => resolve(), 750));
 
   const update = data => {
