@@ -70,6 +70,12 @@
   // Legend
   const legend = gapMinder.append('g').attr('transform', `translate(${width - 10}, ${height - 120})`);
 
+  // Tooltip
+  const tooltip = chartArea
+    .append('div')
+    .attr('class', 'tooltip')
+    .html('hello');
+
   // Data
   const data = await d3.json('./data.json');
   const maxLifeExpByYears = data.map(it => d3.max(it.countries, d => d.life_exp));
@@ -109,6 +115,38 @@
       .attr('text-anchor', 'end')
       .text(d => d);
   };
+
+  /**
+   * Build Content for tooltip
+   *
+   * @param {Object} country country data object
+   */
+  const buildTooltipContent = ({ country, population, life_exp, income }) => {
+    return `
+      <div class="content"><span class="label">Country:</span> ${country}</div>
+      <div class="content"><span class="label">Population:</span> ${d3.format(',')(population)}</div>
+      <div class="content"><span class="label">GDP Per Capita:</span> ${d3.format('$,.0f')(income)}</div>
+      <div class="content"><span class="label">Life Expectancy:</span> ${d3.format('.2f')(life_exp)}</div>
+      `;
+  };
+
+  /**
+   * Render Info Tooltip
+   *
+   * @param {Object} country country data object
+   */
+  const renderTooltip = country =>
+    tooltip
+      .html(buildTooltipContent(country))
+      .style('left', `${xScale(country.income) + margin.left + 10 + rScale(country.population)}px`)
+      .style('top', `${yScaleReverse(country.life_exp) + margin.top - 12}px`)
+      .transition(d3.transition().duration(100))
+      .style('opacity', 1);
+
+  /**
+   * Hide Info Tooltip
+   */
+  const hideTooltip = () => tooltip.transition(d3.transition().duration(500)).style('opacity', 0);
 
   const initialDraw = () => {
     xScale.domain([300, maxIncome]);
@@ -152,6 +190,8 @@
       .append('circle')
       .attr('cx', d => xScale(d.income))
       .attr('cy', d => yScaleReverse(d.life_exp))
+      .on('mouseover', renderTooltip)
+      .on('mouseout', hideTooltip)
       .merge(circles)
       .transition(d3.transition().duration(100))
       .ease(d3.easeLinear)
@@ -162,7 +202,7 @@
       .attr('fill', d => colorScale(d.continent));
   };
 
-  update(data[0]);
+  update(data[170]);
 
   let index = 0;
   d3.interval(() => {

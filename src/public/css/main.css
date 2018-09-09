@@ -21,6 +21,10 @@ ul {
   background: #17a589;
 }
 
+#chart-area {
+  position: relative;
+}
+
 .container.container__secondary {
   background: #a3e4d7;
 }
@@ -77,4 +81,49 @@ ul {
 
 .main-content {
   padding: 20px 0;
+}
+
+.tooltip {
+  position: absolute;
+  min-width: 100px;
+  padding: 4px 8px;
+  font: 12px sans-serif;
+  background: #fff;
+  border: 1px #000 solid;
+  border-radius: 2px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.tooltip:after,
+.tooltip:before {
+  right: 100%;
+  top: 11px;
+  border: solid transparent;
+  content: '';
+  height: 0;
+  width: 0;
+  position: absolute;
+}
+
+.tooltip:after {
+  border-color: rgba(255, 255, 255, 0);
+  border-right-color: #fff;
+  border-width: 6px;
+  margin-top: -6px;
+}
+
+.tooltip:before {
+  border-color: rgba(26, 30, 33, 0);
+  border-right-color: #1a1e21;
+  border-width: 7px;
+  margin-top: -7px;
+}
+
+.tooltip .content {
+  white-space: nowrap;
+}
+
+.tooltip .label {
+  font-weight: bold;
 }
