@@ -4,14 +4,25 @@
 <head>
   {{> ../partials/head}}
   <link rel="stylesheet" href="/css/gapminder.css">
+  <link rel="stylesheet" href="/css/slider.css">
+
 </head>
 
 <body>
   {{> ../partials/header}}
   <h1>Gapminder</h1>
   <div id="chart-area"></div>
-  <button id="play-stop">play/stop</button>
+  <div class="controls">
+    <button id="play-stop">play/stop</button>
+    <div id="slider" class="slider">
+      <div class="slider__bar"></div>
+      <div class="slider__control-area">
+        <div class="slider__pointer"></div>
+      </div>
+    </div>
+  </div>
   <script src="/assets/d3.v5.js"></script>
+  <script src="/assets/slider.js"></script>
   <script src="gapminder.js"></script>
   {{> ../partials/footer}}
 </body>

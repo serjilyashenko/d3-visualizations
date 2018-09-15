@@ -1,0 +1,48 @@
+.slider {
+  position: relative;
+  width: 100%;
+}
+
+.slider .slider__bar {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 5px;
+  height: 5px;
+  background: #a3e4d7;
+  border: solid 1px #1abc9c;
+  border-radius: 8px;
+  opacity: 0.8;
+  transition: opacity 0.5s;
+}
+
+.slider:hover .slider__bar {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.slider__control-area {
+  position: relative;
+  height: 100%;
+  margin: 0 15px;
+}
+
+.slider .slider__control-area .slider__pointer {
+  position: absolute;
+  content: ' ';
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  background: #4bb7a1;
+  border: 1px solid #0e6655;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: opacity 0.5s;
+  transition: left 0.1s linear;
+}
+
+.slider:hover .slider__control-area .slider__pointer {
+  background: #0e6655;
+  transition: opacity 0.5s;
+  transition: left 0.1s linear;
+}

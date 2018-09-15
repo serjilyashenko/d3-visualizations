@@ -134,3 +134,7 @@ ul {
 .tooltip .label {
   font-weight: bold;
 }
+
+.controls {
+  display: flex;
+}

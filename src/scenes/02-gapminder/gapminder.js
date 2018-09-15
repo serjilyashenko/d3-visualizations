@@ -84,7 +84,7 @@ const GapminderLegacy = async function(data) {
   const chartArea = d3.select('#chart-area');
   const canvasWidth = chartArea.node().offsetWidth;
   const canvasHeight = 500;
-  const margin = { left: 60, top: 50, right: 50, bottom: 60 };
+  const margin = { left: 60, top: 50, right: 10, bottom: 60 };
   const width = canvasWidth - margin.left - margin.right;
   const height = canvasHeight - margin.top - margin.bottom;
   const t = d3.transition().duration(1000);
@@ -291,13 +291,17 @@ const GapminderLegacy = async function(data) {
 (async function() {
   const data = await d3.json('./data.json');
   const gapminder = await GapminderLegacy(data);
+
+  // Gapminder slider control
+  const slider = new Slider('slider');
+
+  // Gapminder autoplay
   const playButton = window.document.getElementById('play-stop');
-
   let index = 0;
-
   const createTimer = () =>
     d3.interval(() => {
       gapminder.show(index);
+      slider.setPosition((index * 100) / data.length);
       index = index >= data.length - 1 ? 0 : index + 1;
     }, 100);
 
@@ -310,5 +314,11 @@ const GapminderLegacy = async function(data) {
     } else {
       timer = createTimer();
     }
+  });
+
+  slider.onChange(position => {
+    const temp = Math.round((position * data.length) / 100);
+    index = Slider.range(temp, 0, data.length - 1);
+    gapminder.show(index);
   });
 })();
