@@ -1,13 +1,90 @@
 /**
+ * Class representing margin indents
+ * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
+ */
+class Margin {
+  /**
+   * Create a margin indents object
+   * @param {number} top - The top margin
+   * @param {number} right - The right margin
+   * @param {number} bottom - The bottom margin
+   * @param {number} left - The left margin
+   */
+  constructor(top, right, bottom, left) {
+    this.top = top;
+    this.right = right || top;
+    this.bottom = bottom || top;
+    this.left = left || right || top;
+  }
+}
+
+/**
+ * Creates
+ * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
+ */
+class Gapminder {
+  constructor(selector, margin) {
+    this.margin = margin;
+    this.t = d3.transition().duration(400);
+    this.area = this._createArea(selector);
+  }
+
+  /**
+   * Create svg canvas area
+   * @param {string} selector - The query selector
+   */
+  _createArea(selector) {
+    const margin = this.margin;
+    const chartArea = d3.select(selector);
+    const canvasWidth = chartArea.node().offsetWidth;
+    const canvasHeight = 500;
+    const svg = chartArea
+      .append('svg')
+      .attr('width', canvasWidth)
+      .attr('height', canvasHeight);
+
+    return svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+  }
+
+  /**
+   * Update svg canvas area or create it
+   */
+  _updateArea() {
+    const t = this.t;
+    const margin = this.margin;
+    this.area.transition(t).attr('transform', `translate(${margin.left},${margin.top})`);
+    return this;
+  }
+
+  /**
+   * Update svg canvas area with new margin
+   * @param {Margin} margin
+   */
+  setMargin(margin) {
+    this.margin = margin;
+    this._updateArea();
+    // TODO: update axis
+    // TODO: update diagram
+    return this;
+  }
+
+  renderAxis() {}
+
+  renderUpdate() {
+    // TODO: update diagram
+  }
+}
+
+/**
  * Creates gapminder diagram
  *
  * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
  */
-(async function() {
+const GapminderLegacy = async function(data) {
   const chartArea = d3.select('#chart-area');
   const canvasWidth = chartArea.node().offsetWidth;
   const canvasHeight = 500;
-  const margin = { left: 100, top: 50, right: 50, bottom: 100 };
+  const margin = { left: 60, top: 50, right: 50, bottom: 60 };
   const width = canvasWidth - margin.left - margin.right;
   const height = canvasHeight - margin.top - margin.bottom;
   const t = d3.transition().duration(1000);
@@ -77,7 +154,7 @@
     .html('hello');
 
   // Data
-  const data = await d3.json('./data.json');
+  // const data = await d3.json('./data.json');
   const maxLifeExpByYears = data.map(it => d3.max(it.countries, d => d.life_exp));
   const maxLifeExp = Math.ceil(d3.max(maxLifeExpByYears) / 10) * 10;
   const maxIncomeByYears = data.map(it => d3.max(it.countries, d => d.income));
@@ -172,14 +249,16 @@
   // Waiting until initialDraw finish
   await new Promise(resolve => setTimeout(() => resolve(), 750));
 
-  const update = data => {
+  const show = index => {
     // TODO: optimize this. It is enough to filter ones.
-    const countries = data.countries
+    const i = index < data.length ? index : data.length - 1;
+    const data1 = data[index];
+    const countries = data1.countries
       .filter(country => country.population)
       .filter(country => country.income)
       .filter(country => country.life_exp)
       .sort((a, b) => a.population < b.population);
-    yearMark.text(data.year);
+    yearMark.text(data1.year);
 
     let circles = gapMinder.selectAll('circle').data(countries, d => d.country);
 
@@ -202,15 +281,34 @@
       .attr('fill', d => colorScale(d.continent));
   };
 
-  update(data[170]);
+  // show(data[170]);
+
+  return {
+    show
+  };
+};
+
+(async function() {
+  const data = await d3.json('./data.json');
+  const gapminder = await GapminderLegacy(data);
+  const playButton = window.document.getElementById('play-stop');
 
   let index = 0;
-  d3.interval(() => {
-    update(data[index]);
-    if (index >= data.length - 1) {
-      index = 0;
+
+  const createTimer = () =>
+    d3.interval(() => {
+      gapminder.show(index);
+      index = index >= data.length - 1 ? 0 : index + 1;
+    }, 100);
+
+  let timer = createTimer();
+
+  playButton.addEventListener('click', () => {
+    if (timer) {
+      timer.stop();
+      timer = null;
     } else {
-      index++;
+      timer = createTimer();
     }
-  }, 100);
+  });
 })();
