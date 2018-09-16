@@ -7,6 +7,11 @@ ul {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+h1.chart-title {
+  display: none;
+}
+
+/* Github link */
 .github-link {
   display: inline-block;
   vertical-align: middle;
@@ -17,6 +22,7 @@ ul {
   height: 50px;
 }
 
+/* Main page content */
 .container {
   background: #17a589;
 }
@@ -38,13 +44,7 @@ ul {
   max-width: 95%;
 }
 
-@media only screen and (min-width: 768px) {
-  .container__content {
-    margin: auto;
-    max-width: 75%;
-  }
-}
-
+/* Header */
 .header {
   display: flex;
   justify-content: space-between;
@@ -61,6 +61,7 @@ ul {
   line-height: 0;
 }
 
+/* Navigation */
 .navigation {
   display: flex;
   justify-content: space-between;
@@ -87,9 +88,15 @@ ul {
 }
 
 .main-content {
-  padding: 20px 0;
+  padding: 0;
 }
 
+/* Chart controls */
+.controls {
+  display: flex;
+}
+
+/* Tooltip */
 .tooltip {
   position: absolute;
   min-width: 100px;
@@ -135,6 +142,18 @@ ul {
   font-weight: bold;
 }
 
-.controls {
-  display: flex;
+@media only screen and (min-width: 376px) {
+  h1.chart-title {
+    display: block;
+  }
+
+  .main-content {
+    padding: 20px 0;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .container__content {
+    max-width: 75%;
+  }
 }
