@@ -37,11 +37,19 @@ class Slider {
     this.slider.addEventListener('mousedown', e => {
       this.handleMove(e);
       window.addEventListener('mousemove', this.handleMove);
-      window.addEventListener('touchmove', this.handleMove);
     });
 
     window.addEventListener('mouseup', () => {
       window.removeEventListener('mousemove', this.handleMove);
+    });
+
+    this.slider.addEventListener('touchstart', e => {
+      this.handleMove(e);
+      window.addEventListener('touchmove', this.handleMove);
+    });
+
+    window.addEventListener('touchend', () => {
+      window.removeEventListener('touchmove', this.handleMove);
     });
   }
 
