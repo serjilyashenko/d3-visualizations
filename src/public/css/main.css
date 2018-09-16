@@ -70,6 +70,7 @@ h1.chart-title {
   -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
   animation-name: header-animation;
   animation-duration: 1s;
+  white-space: nowrap;
 }
 
 .header a {
