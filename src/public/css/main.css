@@ -111,6 +111,7 @@ h1.chart-title {
 /* Chart controls */
 .controls {
   display: flex;
+  padding: 0 0 30px;
 }
 
 /* Tooltip */
@@ -159,7 +160,7 @@ h1.chart-title {
   font-weight: bold;
 }
 
-@media only screen and (min-width: 376px) {
+@media only screen and (min-width: 668px) {
   h1.chart-title {
     display: block;
   }
