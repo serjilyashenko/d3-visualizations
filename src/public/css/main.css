@@ -22,7 +22,6 @@ h1.chart-title {
   height: 50px;
 }
 
-/* Main page content */
 .container {
   background: #17a589;
 }
@@ -31,11 +30,11 @@ h1.chart-title {
   position: relative;
 }
 
-.container.container__secondary {
+.container.container_secondary {
   background: #a3e4d7;
 }
 
-.container.container__main {
+.container.container_main {
   background: #fff;
 }
 
@@ -52,8 +51,25 @@ h1.chart-title {
   padding: 10px 0;
 }
 
+@keyframes header-animation {
+  0% {
+    opacity: 0;
+    padding-left: 100px;
+  }
+  25% {
+    opacity: 0;
+  }
+  100% {
+    padding-left: 0;
+  }
+}
+
 .header h1 {
   color: #fff;
+  -webkit-animation-name: header-animation; /* Safari 4.0 - 8.0 */
+  -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
+  animation-name: header-animation;
+  animation-duration: 1s;
 }
 
 .header a {
@@ -145,6 +161,11 @@ h1.chart-title {
 @media only screen and (min-width: 376px) {
   h1.chart-title {
     display: block;
+  }
+
+  .container.container_main {
+    height: calc(100vh - 110px);
+    overflow: scroll;
   }
 
   .main-content {
