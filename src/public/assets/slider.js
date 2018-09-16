@@ -34,22 +34,26 @@ class Slider {
    * Initiate all slider handlers
    */
   init() {
-    this.slider.addEventListener('mousedown', e => {
-      this.handleMove(e);
+    this.slider.addEventListener('click', this.handleMove);
+
+    this.slider.addEventListener('mousedown', () => {
       window.addEventListener('mousemove', this.handleMove);
+      this.controlArea.classList.add('slider__control-area_transition-stop');
     });
 
     window.addEventListener('mouseup', () => {
       window.removeEventListener('mousemove', this.handleMove);
+      this.controlArea.classList.remove('slider__control-area_transition-stop');
     });
 
-    this.slider.addEventListener('touchstart', e => {
-      this.handleMove(e);
+    this.slider.addEventListener('touchstart', () => {
       window.addEventListener('touchmove', this.handleMove);
+      this.controlArea.classList.add('slider__control-area_transition-stop');
     });
 
     window.addEventListener('touchend', () => {
       window.removeEventListener('touchmove', this.handleMove);
+      this.controlArea.classList.remove('slider__control-area_transition-stop');
     });
   }
 

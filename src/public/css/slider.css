@@ -46,3 +46,8 @@
   transition: opacity 0.5s;
   transition: left 0.1s linear;
 }
+
+.slider .slider__control-area.slider__control-area_transition-stop .slider__pointer {
+  transition: opacity 0.5s;
+  transition: left none;
+}
