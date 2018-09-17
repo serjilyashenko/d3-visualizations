@@ -102,9 +102,10 @@ class Slider {
    * @returns {number} - The slider coordinate (px)
    */
   _getCoordinate(e) {
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const width = this.controlArea.clientWidth;
     const areaLeft = this.controlArea.getBoundingClientRect().left;
-    return Slider.range(e.clientX - areaLeft, 0, width);
+    return Slider.range(clientX - areaLeft, 0, width);
   }
 
   /**
@@ -132,11 +133,6 @@ class Slider {
    * @param {MouseEvent} e - The mouse event
    */
   _handleMove(e) {
-    // TODO: It is not a great solution. It needs to be refactored.
-    if (e.touches) {
-      e.clientX = e.touches[0].clientX;
-      e.clientY = e.touches[0].clientY;
-    }
     const coordinate = this._getCoordinate(e);
     this.setCoordinate(coordinate);
     if (typeof this.callback === 'function') {

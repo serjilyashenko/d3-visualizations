@@ -114,6 +114,18 @@ h1.chart-title {
   padding: 0 0 30px;
 }
 
+.controls {
+  width: 100%;
+}
+
+.controls .controls__cell {
+  align-self: center;
+}
+
+.controls .controls__cell.controls__cell_fluid {
+  width: 100%;
+}
+
 /* Tooltip */
 .tooltip {
   position: absolute;
