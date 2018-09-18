@@ -126,6 +126,27 @@ h1.chart-title {
   width: 100%;
 }
 
+.player-button {
+  background: url('/img/player-icons.png');
+  width: 32px;
+  height: 31px;
+  background-size: 150px;
+  background-position: -259px -54px;
+  border-radius: 50%;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 1s;
+}
+
+.player-button.player-button_stop {
+  background-position-y: -8px;
+}
+
+.player-button:hover {
+  opacity: 0.6;
+  transition: opacity 1s;
+}
+
 /* Tooltip */
 .tooltip {
   position: absolute;

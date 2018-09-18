@@ -305,13 +305,16 @@ const GapminderLegacy = async function(data) {
       index = index >= data.length - 1 ? 0 : index + 1;
     }, 100);
 
-  let timer = createTimer();
+  let timer = createTimer(); // default state is playing
+  playButton.classList.add('player-button_stopped');
 
   playButton.addEventListener('click', () => {
     if (timer) {
+      playButton.classList.add('player-button_stop');
       timer.stop();
       timer = null;
     } else {
+      playButton.classList.remove('player-button_stop');
       timer = createTimer();
     }
   });

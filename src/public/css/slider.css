@@ -1,7 +1,7 @@
 .slider {
   position: relative;
   width: 100%;
-  height: 40px;
+  height: 34px;
 }
 
 .slider .slider__bar {
@@ -26,6 +26,7 @@
   position: relative;
   height: 100%;
   margin: 0 20px;
+  cursor: pointer;
 }
 
 .slider .slider__control-area .slider__pointer {
@@ -38,6 +39,7 @@
   background: #eeeeee;
   border: 1px solid #cbcbcb;
   border-radius: 50%;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
   pointer-events: none;
   transition: opacity 0.5s;
   transition: left 0.1s linear;
