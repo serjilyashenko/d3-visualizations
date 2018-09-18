@@ -28,6 +28,7 @@ h1.chart-title {
 
 #chart-area {
   position: relative;
+  height: 500px;
 }
 
 .container.container_secondary {

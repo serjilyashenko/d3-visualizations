@@ -19,7 +19,7 @@ class Margin {
 }
 
 /**
- * Creates
+ * Creates gapminder diagram
  * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
  */
 class Gapminder {
@@ -76,11 +76,11 @@ class Gapminder {
 }
 
 /**
- * Creates gapminder diagram
+ * Creates gapminder diagram. Legacy version.
  *
  * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
  */
-const GapminderLegacy = async function(data) {
+const GapminderLegacy = async function() {
   const chartArea = d3.select('#chart-area');
   const canvasWidth = chartArea.node().offsetWidth;
   const canvasHeight = 500;
@@ -154,7 +154,7 @@ const GapminderLegacy = async function(data) {
     .html('hello');
 
   // Data
-  // const data = await d3.json('./data.json');
+  const data = await d3.json('./data.json');
   const maxLifeExpByYears = data.map(it => d3.max(it.countries, d => d.life_exp));
   const maxLifeExp = Math.ceil(d3.max(maxLifeExpByYears) / 10) * 10;
   const maxIncomeByYears = data.map(it => d3.max(it.countries, d => d.income));
@@ -284,13 +284,14 @@ const GapminderLegacy = async function(data) {
   // show(data[170]);
 
   return {
+    data,
     show
   };
 };
 
 (async function() {
-  const data = await d3.json('./data.json');
-  const gapminder = await GapminderLegacy(data);
+  const gapminder = await GapminderLegacy();
+  const data = gapminder.data;
 
   // Gapminder slider control
   const slider = new Slider('slider');
