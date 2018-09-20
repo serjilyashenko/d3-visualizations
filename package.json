@@ -1,6 +1,6 @@
 {
   "name": "d3-visualizations",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Visualization Samples Using D3 library",
   "engines": {
     "node": "8.11.4"

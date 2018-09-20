@@ -28,7 +28,8 @@ h1.chart-title {
 
 #chart-area {
   position: relative;
-  height: 500px;
+  height: 60vh;
+  max-height: 500px;
 }
 
 .container.container_secondary {
@@ -82,10 +83,10 @@ h1.chart-title {
 /* Navigation */
 .navigation {
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
+  flex-wrap: wrap;
   list-style-type: none;
   padding: 10px 0;
-  width: 330px;
 }
 
 .navigation li {
@@ -101,8 +102,11 @@ h1.chart-title {
 }
 
 .navigation li a:hover {
-  font-size: 18px;
-  margin-left: -2px;
+  text-decoration: underline;
+}
+
+.navigation li a.active {
+  text-decoration: underline;
 }
 
 .main-content {

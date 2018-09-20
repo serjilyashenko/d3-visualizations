@@ -27,8 +27,21 @@
         <li>
           <a href="/02-gapminder/index.html">Gapminder</a>
         </li>
+        <li>
+          <a href="/03-coin-stars/index.html">Coin Stars</a>
+        </li>
       </ul>
     </div>
+    <script>
+      var linksCollection = document.querySelectorAll('.navigation a');
+      var links = Array.prototype.slice.call(linksCollection);
+      var currentPath = document.location.pathname;
+      links.forEach(function (a) {
+        if (currentPath === a.getAttribute('href')) {
+          a.classList.add('active');
+        }
+      });
+    </script>
   </div>
 </div>
 <div class="container container_main">
