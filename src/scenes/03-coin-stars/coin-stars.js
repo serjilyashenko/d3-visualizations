@@ -1,18 +1,18 @@
 /* global d3, Margin */
 
 /**
- * Class representing diagram rendering
+ * Class representing scales diagram rendering
  * @requires d3
  * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
  */
-class Diagram {
+class ScalesDiagram {
   /**
    * Create a diagram instance
    * @constructor
    * @param {string} selector - The css selector
    * @param {Margin} margin - The instance of the Margin class
    */
-  constructor(selector, margin) {
+  constructor(selector, margin, xSelector, ySelector) {
     this.t = d3.transition().duration(400);
     this.chartArea = d3.select(selector);
     this.margin = margin;
@@ -29,6 +29,9 @@ class Diagram {
     this.initScales();
     this.resizeScales();
 
+    this.xSelector = xSelector;
+    this.ySelector = ySelector;
+
     window.addEventListener('resize', this.handleResize.bind(this));
   }
 
@@ -40,28 +43,6 @@ class Diagram {
   get height() {
     const canvasHeight = this.chartArea.node().offsetHeight;
     return canvasHeight - this.margin.top - this.margin.bottom;
-  }
-
-  /**
-   * Update svg canvas area
-   */
-  updateArea() {
-    const t = this.t;
-    const margin = this.margin;
-    this.svgArea.transition(t).attr('transform', `translate(${margin.left},${margin.top})`);
-    return this;
-  }
-
-  /**
-   * Set new margin and handle this
-   * @param {Margin} margin - The instance of the Margin class
-   */
-  setMargin(margin) {
-    this.margin = margin;
-    this.updateArea();
-    // TODO: update axis
-    // TODO: update diagram
-    return this;
   }
 
   initScales() {
@@ -81,40 +62,51 @@ class Diagram {
     this.yScaleReverse.range([this.height, 0]);
   }
 
-  updateScales(data) {
-    this.xScale.domain(data.map(d => d.month));
-    this.yScale.domain([0, d3.max(data.map(d => d['profit']))]);
-    this.yScaleReverse.domain([0, d3.max(data.map(d => d['profit']))]);
-  }
-
-  // naming !
-  applyElements(elements) {
-    elements
-      .attr('x', d => this.xScale(d.month))
-      .attr('y', d => this.yScaleReverse(d['profit']))
-      .attr('width', this.xScale.bandwidth)
-      .attr('height', d => this.yScale(d['profit']));
-  }
-
   resizeElements() {
-    const elements = this.elements;
-    this.applyElements(elements);
+    console.log('>> Method needs to be override');
   }
 
-  removeElements() {}
-
-  createElements() {}
-
-  updateElements() {
-    const elements = this.elements.transition(200);
-    this.applyElements(elements);
+  updateScales(data) {
+    this.xScale.domain(data.map(this.xSelector));
+    this.yScale.domain([0, d3.max(data.map(this.ySelector))]);
+    this.yScaleReverse.domain([0, d3.max(data.map(this.ySelector))]);
   }
 
   draw(data) {
     this.updateScales(data);
+  }
+}
 
-    const elements = this.diagram.selectAll('rect').data(data, d => d.month);
+class BarChart extends ScalesDiagram {
+  initScales() {
+    super.initScales();
+    this.xScale.paddingOuter(0.3).paddingInner(0.3);
+  }
 
+  resizeElements() {
+    this.updateElements(this.elements);
+  }
+
+  createElements(elements) {
+    return elements
+      .enter()
+      .append('rect')
+      .attr('x', d => this.xScale(this.xSelector(d)))
+      .attr('y', this.height)
+      .attr('width', this.xScale.bandwidth)
+      .attr('height', 0)
+      .attr('fill', '#58D68D');
+  }
+
+  updateElements(elements) {
+    elements
+      .attr('x', d => this.xScale(this.xSelector(d)))
+      .attr('y', d => this.yScaleReverse(this.ySelector(d)))
+      .attr('width', this.xScale.bandwidth)
+      .attr('height', d => this.yScale(this.ySelector(d)));
+  }
+
+  firstUpdate(elements) {
     elements
       .exit()
       .transition(200)
@@ -122,32 +114,53 @@ class Diagram {
       .attr('y', this.height)
       .attr('height', 0)
       .remove();
-
-    this.elements = elements
-      .enter()
-      .append('rect')
-      .attr('x', d => this.xScale(d.month))
-      .attr('y', this.height)
-      .attr('width', this.xScale.bandwidth)
-      .attr('height', 0)
-      .attr('fill', '#58D68D')
-      .merge(elements);
-
-    this.updateElements();
   }
-}
 
-class BarChart extends Diagram {
-  initScales() {
-    super.initScales();
-    this.xScale.paddingOuter(0.3).paddingInner(0.3);
+  secondUpdate(elements) {
+    elements
+      .transition(200)
+      .delay(300)
+      .attr('y', d => this.yScaleReverse(this.ySelector(d)))
+      .attr('height', d => this.yScale(this.ySelector(d)));
+  }
+
+  thirdUpdate(elements) {
+    elements.attr('x', d => this.xScale(this.xSelector(d))).attr('width', this.xScale.bandwidth);
+  }
+
+  firstDraw() {
+    this.updateElements(this.elements.transition(300));
+  }
+
+  updateDraw(elements) {
+    this.firstUpdate(elements);
+    this.secondUpdate(elements);
+    this.thirdUpdate(this.elements.transition(300).delay(600));
+    this.updateElements(this.elements.transition(300).delay(900));
+  }
+
+  draw(data) {
+    super.draw(data);
+
+    const elements = this.diagram.selectAll('rect').data(data, this.xSelector);
+    const newElements = this.createElements(elements);
+
+    this.createElements(elements);
+
+    if (!this.elements) {
+      this.elements = newElements;
+      this.firstDraw();
+    } else {
+      this.elements = newElements.merge(elements);
+      this.updateDraw(elements);
+    }
   }
 }
 
 (async function() {
   const selector = '#chart-area-2';
   const margin = new Margin(50, 10, 60, 60);
-  const diagram = new BarChart(selector, margin);
+  const diagram = new BarChart(selector, margin, d => d.month, d => d.revenue);
   const rawData = await d3.json('./data.json');
   const data = rawData.map(d =>
     Object.assign({}, d, {
@@ -155,6 +168,17 @@ class BarChart extends Diagram {
       revenue: Number(d.revenue)
     })
   );
+
+  let isProfit = false;
+
+  d3.interval(() => {
+    const valueKey = isProfit ? 'revenue' : 'profit';
+    const modifiedData = isProfit ? data.slice(0, -2) : data.slice(1);
+    isProfit = !isProfit;
+    diagram.ySelector = d => d[valueKey];
+    diagram.draw(modifiedData);
+  }, 1500);
+
   diagram.draw(data);
 })();
 
@@ -163,7 +187,7 @@ class BarChart extends Diagram {
  * @requires d3
  * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
  */
-class AxisDiagram extends Diagram {
+class AxisDiagram extends ScalesDiagram {
   /**
    * Create an axis diagram instance
    * @constructor
@@ -173,7 +197,6 @@ class AxisDiagram extends Diagram {
   constructor(selector, margin) {
     super(selector, margin);
 
-    this.xScale = null;
     this.xAxisGroup = null;
     this.initXAxis();
     this.resizeXAxis();
@@ -214,6 +237,4 @@ class AxisDiagram extends Diagram {
     super.handleResize();
     this.resizeXAxis();
   }
-
-  update() {}
 }
