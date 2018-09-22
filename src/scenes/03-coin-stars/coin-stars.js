@@ -66,21 +66,112 @@ class ScalesDiagram {
     console.log('>> Method needs to be override');
   }
 
-  updateScales(data) {
-    this.xScale.domain(data.map(this.xSelector));
-    this.yScale.domain([0, d3.max(data.map(this.ySelector))]);
-    this.yScaleReverse.domain([0, d3.max(data.map(this.ySelector))]);
+  xExtent(data) {
+    return [0, d3.max(data.map(this.xSelector))];
+  }
+
+  yExtent(data) {
+    return [0, d3.max(data.map(this.ySelector))];
+  }
+
+  updateScales(xExtent, yExtent) {
+    this.xScale.domain(xExtent);
+    this.yScale.domain(yExtent);
+    this.yScaleReverse.domain(yExtent);
   }
 
   draw(data) {
-    this.updateScales(data);
+    const xExtent = this.xExtent(data);
+    const yExtent = this.yExtent(data);
+    this.updateScales(xExtent, yExtent);
   }
 }
 
-class BarChart extends ScalesDiagram {
+/**
+ * Class representing diagram with Axis rendering
+ * @requires d3
+ * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
+ */
+class AxisDiagram extends ScalesDiagram {
+  /**
+   * Create an axis diagram instance
+   * @constructor
+   * @param {string} selector - The css selector
+   * @param {Margin} margin - The instance of the Margin class
+   */
+  constructor(selector, margin, xSelector, ySelector) {
+    super(selector, margin, xSelector, ySelector);
+
+    this.xAxisGroup = null;
+    this.yAxisGroup = null;
+    this.initAxis();
+    this.resizeAxis();
+  }
+
+  initAxis() {
+    this.xAxisGroup = this.diagram.append('g');
+    this.yAxisGroup = this.diagram.append('g');
+  }
+
+  getXAxis() {
+    return d3.axisBottom(this.xScale);
+  }
+
+  getYAxis() {
+    return d3.axisLeft(this.yScaleReverse);
+  }
+
+  resizeAxis() {
+    this.xScale.range([0, this.width]);
+    this.yScale.range([0, this.height]);
+    this.yScaleReverse.range([this.height, 0]);
+    const xAxis = this.getXAxis();
+    const yAxis = this.getYAxis().ticks(0);
+    this.xAxisGroup.call(xAxis).attr('transform', `translate(0, ${this.height})`);
+    this.yAxisGroup
+      .call(yAxis)
+      .selectAll('text')
+      .attr('opacity', 0);
+  }
+
+  updateXAxis(transition) {
+    const xAxis = this.getXAxis();
+    return this.xAxisGroup.transition(transition).call(xAxis);
+  }
+
+  firstUpdateYAxis(t) {
+    const yAxis = this.getYAxis();
+    this.yAxisGroup
+      .call(yAxis)
+      .selectAll('text')
+      .attr('opacity', 0);
+    this.updateYAxis(t);
+  }
+
+  updateYAxis(transition) {
+    const yAxis = this.getYAxis();
+    this.yAxisGroup
+      .transition(transition)
+      .call(yAxis)
+      .selectAll('text')
+      .attr('opacity', 1);
+    return this.yAxisGroup;
+  }
+
+  handleResize() {
+    super.handleResize();
+    this.resizeAxis();
+  }
+}
+
+class BarChart extends AxisDiagram {
   initScales() {
     super.initScales();
     this.xScale.paddingOuter(0.3).paddingInner(0.3);
+  }
+
+  xExtent(data) {
+    return data.map(this.xSelector);
   }
 
   resizeElements() {
@@ -106,10 +197,8 @@ class BarChart extends ScalesDiagram {
       .attr('height', d => this.yScale(this.ySelector(d)));
   }
 
-  firstUpdate(elements) {
+  removeElements(elements) {
     elements
-      .exit()
-      .transition(200)
       .attr('fill', '#DC7633')
       .attr('y', this.height)
       .attr('height', 0)
@@ -117,26 +206,64 @@ class BarChart extends ScalesDiagram {
   }
 
   secondUpdate(elements) {
-    elements
-      .transition(200)
-      .delay(300)
-      .attr('y', d => this.yScaleReverse(this.ySelector(d)))
-      .attr('height', d => this.yScale(this.ySelector(d)));
+    elements.attr('y', d => this.yScaleReverse(this.ySelector(d))).attr('height', d => this.yScale(this.ySelector(d)));
   }
 
-  thirdUpdate(elements) {
-    elements.attr('x', d => this.xScale(this.xSelector(d))).attr('width', this.xScale.bandwidth);
+  thirdUpdate(elements, transition) {
+    elements
+      .transition(transition)
+      .attr('x', d => this.xScale(this.xSelector(d)))
+      .attr('width', this.xScale.bandwidth);
+  }
+
+  updateXAxis(transition) {
+    const xAxis = this.getXAxis();
+    this.xAxisGroup
+      .transition(transition)
+      .call(xAxis)
+      .selectAll('text')
+      .attr('y', 10)
+      .attr('x', -5)
+      .attr('text-anchor', 'end')
+      .attr('transform', 'rotate(-40)');
+    return this.xAxisGroup;
   }
 
   firstDraw() {
-    this.updateElements(this.elements.transition(300));
+    const t = d3.transition().duration(700);
+    this.updateXAxis(t);
+    this.firstUpdateYAxis(t);
+    this.updateElements(
+      this.elements
+        .transition()
+        .duration(700)
+        .delay(700)
+    );
   }
 
   updateDraw(elements) {
-    this.firstUpdate(elements);
-    this.secondUpdate(elements);
-    this.thirdUpdate(this.elements.transition(300).delay(600));
-    this.updateElements(this.elements.transition(300).delay(900));
+    const t1 = d3.transition().duration(400);
+    this.removeElements(elements.exit().transition(t1));
+
+    const t2 = d3
+      .transition()
+      .duration(400)
+      .delay(400);
+    this.updateYAxis(t2);
+    this.secondUpdate(elements.transition(t2));
+
+    const t3 = d3
+      .transition()
+      .duration(200)
+      .delay(800);
+    this.updateXAxis(t3);
+    this.thirdUpdate(elements, t3);
+
+    const t4 = d3
+      .transition()
+      .duration(400)
+      .delay(1000);
+    this.updateElements(this.elements.transition(t4));
   }
 
   draw(data) {
@@ -177,64 +304,7 @@ class BarChart extends ScalesDiagram {
     isProfit = !isProfit;
     diagram.ySelector = d => d[valueKey];
     diagram.draw(modifiedData);
-  }, 1500);
+  }, 2500);
 
   diagram.draw(data);
 })();
-
-/**
- * Class representing diagram with Axis rendering
- * @requires d3
- * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
- */
-class AxisDiagram extends ScalesDiagram {
-  /**
-   * Create an axis diagram instance
-   * @constructor
-   * @param {string} selector - The css selector
-   * @param {Margin} margin - The instance of the Margin class
-   */
-  constructor(selector, margin) {
-    super(selector, margin);
-
-    this.xAxisGroup = null;
-    this.initXAxis();
-    this.resizeXAxis();
-    this.updateXAxis();
-
-    this.yScaleReverse = null;
-    this.yAxisGroup = null;
-  }
-
-  initXAxis() {
-    this.xScale = d3.scaleLinear();
-    this.xAxisGroup = this.diagram.append('g');
-  }
-
-  initYAxis() {
-    this.yScaleReverse = d3.scaleLinear().range([this.height, 0]);
-    const yAxis = d3.axisLeft(this.yScaleReverse).ticks(0);
-    this.yAxisGroup = this.diagram.append('g').call(yAxis);
-  }
-
-  getXAxis() {
-    return d3.axisBottom(this.xScale);
-  }
-
-  resizeXAxis() {
-    this.xScale.range([0, this.width]);
-    const xAxis = this.getXAxis();
-    this.xAxisGroup.call(xAxis).attr('transform', `translate(0, ${this.height})`);
-  }
-
-  updateXAxis() {
-    this.xScale.domain([undefined, undefined]);
-    const xAxis = this.getXAxis();
-    this.xAxisGroup.transition(200).call(xAxis);
-  }
-
-  handleResize() {
-    super.handleResize();
-    this.resizeXAxis();
-  }
-}
