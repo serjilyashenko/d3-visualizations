@@ -53,6 +53,11 @@
     .attr('font-size', '20px')
     .attr('transform', 'rotate(-90)');
 
+  /**
+   * Render new data
+   * @param {*} data
+   * @param {string} valueKey - The selector
+   */
   const update = (data, valueKey) => {
     xScale.domain(data.map(d => d.month));
     yScale.domain([0, d3.max(data.map(d => d[valueKey]))]);
