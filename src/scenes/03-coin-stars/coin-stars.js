@@ -8,6 +8,7 @@
 class Diagram {
   /**
    * Create a diagram instance
+   * @constructor
    * @param {string} selector - The css selector
    * @param {Margin} margin - The instance of the Margin class
    */
@@ -144,7 +145,7 @@ class BarChart extends Diagram {
 }
 
 (async function() {
-  const selector = '#chart-area';
+  const selector = '#chart-area-2';
   const margin = new Margin(50, 10, 60, 60);
   const diagram = new BarChart(selector, margin);
   const rawData = await d3.json('./data.json');
@@ -163,6 +164,12 @@ class BarChart extends Diagram {
  * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
  */
 class AxisDiagram extends Diagram {
+  /**
+   * Create an axis diagram instance
+   * @constructor
+   * @param {string} selector - The css selector
+   * @param {Margin} margin - The instance of the Margin class
+   */
   constructor(selector, margin) {
     super(selector, margin);
 

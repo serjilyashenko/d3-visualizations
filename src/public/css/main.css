@@ -28,6 +28,10 @@ h1.chart-title {
 
 #chart-area {
   position: relative;
+}
+
+#chart-area-2 {
+  position: relative;
   height: 60vh;
   max-height: 500px;
 }
