@@ -28,6 +28,8 @@ class AxisDiagram extends ScalesDiagram {
   handleResize() {
     super.handleResize();
     this.resizeAxis();
+    this.resizeXLabel();
+    this.resizeYLabel();
   }
 
   getXAxis() {
@@ -93,10 +95,12 @@ class AxisDiagram extends ScalesDiagram {
     return this.diagram
       .append('text')
       .attr('class', 'x-axis-label')
-      .attr('x', this.width / 2)
-      .attr('y', this.height + 60)
       .attr('text-anchor', 'middle')
       .attr('font-size', '20px');
+  }
+
+  resizeXLabel() {
+    this.xLabelElement.attr('x', this.width / 2).attr('y', this.height + 60);
   }
 
   set xLabel(text) {
@@ -111,6 +115,10 @@ class AxisDiagram extends ScalesDiagram {
       .attr('y', -60)
       .attr('font-size', '20px')
       .attr('transform', 'rotate(-90)');
+  }
+
+  resizeYLabel() {
+    this.yLabelElement.attr('x', -this.height / 2);
   }
 
   set yLabel(text) {
