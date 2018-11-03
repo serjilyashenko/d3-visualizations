@@ -46,7 +46,7 @@ class AxisDiagram extends ScalesDiagram {
     this.xScale.range([0, this.width]);
     this.yScale.range([0, this.height]);
     this.yScaleReverse.range([this.height, 0]);
-    const xAxis = this.getXAxis();
+    const xAxis = this.getXAxis().ticks(0);
     const yAxis = this.getYAxis().ticks(0);
     this.xAxisGroup.call(xAxis).attr('transform', `translate(0, ${this.height})`);
     this.yAxisGroup
@@ -67,9 +67,22 @@ class AxisDiagram extends ScalesDiagram {
     this.yAxisGroup.call(yAxis);
   }
 
+  firstUpdateXAxis(t) {
+    const xAxis = this.getXAxis();
+    this.xAxisGroup
+      .call(xAxis)
+      .selectAll('text')
+      .attr('opacity', 0);
+    this.updateXAxis(t);
+  }
+
   updateXAxis(transition) {
     const xAxis = this.getXAxis();
-    return this.xAxisGroup.transition(transition).call(xAxis);
+    return this.xAxisGroup
+      .transition(transition)
+      .call(xAxis)
+      .selectAll('text')
+      .attr('opacity', 1);
   }
 
   firstUpdateYAxis(t) {

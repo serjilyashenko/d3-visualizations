@@ -9,25 +9,14 @@
 
 <body>
   {{> ../partials/header}}
-  <h1 class="chart-title">Coin Stars (in development)</h1>
+  <h1 class="chart-title">Coin Stars - BTC (in development)</h1>
   <div id="chart-area-2"></div>
-  <div class="controls">
-    <div class="controls__cell">
-      <div id="play-stop" class="player-button"></div>
-    </div>
-    <div class="controls__cell controls__cell_fluid">
-      <div id="slider" class="slider">
-        <div class="slider__bar"></div>
-        <div class="slider__control-area">
-          <div class="slider__pointer"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="controls"></div>
   <script src="/assets/d3.v5.js"></script>
   <script src="/assets/margin.js"></script>
   <script src="/assets/scales-diagram.js"></script>
   <script src="/assets/axis-diagram.js"></script>
+  <script src="/assets/line-chart.js"></script>
   <script src="/assets/bar-chart.js"></script>
   <script src="coin-stars.js"></script>
   {{> ../partials/footer}}

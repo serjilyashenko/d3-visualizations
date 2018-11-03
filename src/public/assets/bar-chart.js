@@ -15,15 +15,12 @@ class BarChart extends AxisDiagram {
   }
 
   xExtent(data) {
+    // Use months on x-axis (array of strings)
     return data.map(this.xSelector);
   }
 
   getYAxis() {
     return super.getYAxis().tickFormat(d => `$${d}`);
-  }
-
-  resizeElements() {
-    this.updateElements(this.elements);
   }
 
   set xLabel(text) {
@@ -139,8 +136,6 @@ class BarChart extends AxisDiagram {
 
     const elements = this.diagram.selectAll('rect').data(data, this.xSelector);
     const newElements = this.createElements(elements);
-
-    this.createElements(elements);
 
     if (!this.elements) {
       this.elements = newElements;

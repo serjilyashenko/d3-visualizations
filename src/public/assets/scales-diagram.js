@@ -66,11 +66,11 @@ class ScalesDiagram {
   }
 
   resizeElements() {
-    console.log('>> Method needs to be override');
+    this.updateElements(this.elements);
   }
 
   xExtent(data) {
-    return [0, d3.max(data.map(this.xSelector))];
+    return d3.extent(data.map(this.xSelector));
   }
 
   yExtent(data) {
@@ -81,6 +81,10 @@ class ScalesDiagram {
     this.xScale.domain(xExtent);
     this.yScale.domain(yExtent);
     this.yScaleReverse.domain(yExtent);
+  }
+
+  updateElements() {
+    console.error('>> ScalesDiagram: method "updateElements" should to be overridden');
   }
 
   draw(data) {
