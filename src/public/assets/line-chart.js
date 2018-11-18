@@ -1,5 +1,12 @@
 /* global d3, AxisDiagram */
 
+class Circle {
+  constructor(fill, r) {
+    this.fill = fill;
+    this.r = r;
+  }
+}
+
 /**
  * Class representing Line-Chart diagram with Axis
  * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
@@ -16,7 +23,6 @@ class LineChart extends AxisDiagram {
     this.handlePointerMove = this.handlePointerMove.bind(this);
 
     this.bisectDate = d3.bisector(this.xSelector).left;
-    this.initTooltip();
   }
 
   initScales() {
@@ -26,16 +32,17 @@ class LineChart extends AxisDiagram {
 
   handleResize(...attrs) {
     super.handleResize(...attrs);
+    this.eventRect.attr('width', this.width).attr('height', this.height);
     this.focus
       .select('line')
-      .attr('x1', 0)
-      .attr('y1', this.height)
+      .attr('y2', this.height)
       .attr('visibility', 'hidden');
   }
 
   initTooltip() {
-    this.diagram
-      .append('rect')
+    this.eventRect = this.diagram.append('rect');
+
+    this.eventRect
       .attr('width', this.width)
       .attr('height', this.height)
       .attr('fill', 'none')
@@ -45,18 +52,35 @@ class LineChart extends AxisDiagram {
       .on('mousemove', this.handlePointerMove)
       .on('mouseout', this.hideFocus);
 
+    this.initFocus();
+  }
+
+  initFocus() {
     this.focus = this.diagram.append('g');
     this.focus
       .append('line')
+      .style('pointer-events', 'none')
       .attr('x1', 0)
-      .attr('y1', this.height)
-      .attr('visibility', 'hidden')
-      .attr('stroke', 'red');
+      .attr('y1', 0)
+      .attr('x2', 0)
+      .attr('y2', this.height)
+      .style('display', 'none')
+      .attr('stroke', '#333');
     this.focus
       .append('text')
       .attr('y', 100)
       .attr('x', 15)
-      .attr('dy', '.31em');
+      .attr('dy', '.31em')
+      .style('display', 'none');
+    const circles = [new Circle('#00800080', 7), new Circle('white', 5), new Circle('green', 4)];
+    this.focus
+      .selectAll('circle')
+      .data(circles)
+      .enter()
+      .append('circle')
+      .style('display', 'none')
+      .attr('fill', d => d.fill)
+      .attr('r', d => d.r);
   }
 
   handleTouchStart() {
@@ -77,7 +101,8 @@ class LineChart extends AxisDiagram {
   }
 
   hideFocus() {
-    this.focus.select('line').attr('visibility', 'hidden');
+    this.focus.select('line').style('display', 'none');
+    this.focus.selectAll('circle').style('display', 'none');
   }
 
   setFocus(d) {
@@ -86,46 +111,49 @@ class LineChart extends AxisDiagram {
 
     this.focus
       .select('line')
-      .attr('visibility', 'visible')
+      .style('display', null)
       .attr('x1', x)
-      .attr('x2', x)
-      .attr('y2', y);
-
+      .attr('x2', x);
     this.focus
       .select('text')
       .attr('x', x)
-
+      .style('display', null)
       .attr('text-anchor', 'end')
       .text(this.ySelector(d));
+    this.focus
+      .selectAll('circle')
+      .style('display', null)
+      .attr('cx', x)
+      .attr('cy', y);
   }
 
   createElements(elements) {
-    const line = d3
+    this.line = d3
       .line()
       .x(d => this.xScale(this.xSelector(d)))
       .y(() => this.height);
-    return elements.attr('d', line(this.data));
+    return elements.attr('d', this.line(this.data));
   }
 
   updateElements(elements) {
-    const line = d3
-      .line()
-      .x(d => this.xScale(this.xSelector(d)))
-      .y(d => this.yScaleReverse(this.ySelector(d)));
-    return elements.attr('d', line(this.data));
+    const t = d3.transition().duration(700);
+    this.updateXAxis(t);
+    this.updateYAxis(t);
+    this.elements.transition().attr('d', this.line(this.data));
   }
 
-  firstDraw(data) {
+  firstDraw() {
+    this.line.y(d => this.yScaleReverse(this.ySelector(d)));
+
     const t = d3.transition().duration(700);
     this.firstUpdateXAxis(t);
     this.firstUpdateYAxis(t);
-    this.updateElements(
-      this.elements
-        .transition()
-        .duration(700)
-        .delay(700),
-      data
-    );
+
+    this.elements
+      .transition()
+      .duration(700)
+      .delay(700)
+      .attr('d', this.line(this.data));
   }
 
   draw(data) {
@@ -134,19 +162,21 @@ class LineChart extends AxisDiagram {
     this.data = data;
     const elements = this.diagram
       .append('path')
+      .attr('class', 'line')
       .attr('fill', 'none')
-      .attr('stroke', 'green')
+      .attr('stroke', '#118c11ab')
       .attr('stroke-linejoin', 'round')
       .attr('stroke-linecap', 'round')
       .attr('stroke-width', 1.5);
-    const newElements = this.createElements(elements);
 
-    // if (!this.elements) {
-    this.elements = newElements;
-    this.firstDraw(data);
-    // } else {
-    //   this.elements = newElements.merge(elements);
-    //   this.updateDraw(elements);
-    // }
+    if (!this.elements) {
+      const newElements = this.createElements(elements);
+      this.elements = newElements;
+      this.firstDraw(data);
+      this.initTooltip();
+    } else {
+      this.updateElements();
+      this.hideFocus();
+    }
   }
 }

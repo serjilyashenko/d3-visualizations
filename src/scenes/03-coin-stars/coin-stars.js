@@ -11,9 +11,15 @@
   const rawData = await d3.json(btcURL);
 
   const allRange = d3.map(rawData.bpi).entries();
-  const selectedRange = allRange.slice(-600);
 
   await new Promise(resolve => setTimeout(resolve, 500));
 
-  diagram.draw(selectedRange);
+  const rangeButtons = Array.prototype.slice.apply(document.querySelectorAll('.range-button'));
+  rangeButtons.forEach(rb => {
+    const range = rb.getAttribute('range');
+    const selectedRange = range ? allRange.slice(-1 * range) : allRange;
+    rb.addEventListener('click', () => diagram.draw(selectedRange));
+  });
+
+  diagram.draw(allRange);
 })();

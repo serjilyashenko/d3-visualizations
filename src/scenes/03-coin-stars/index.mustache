@@ -3,13 +3,27 @@
 
 <head>
   {{> ../partials/head}}
+  <style>
+    .controls .center {
+      padding: 10px 0 0 60px;
+      margin: auto;
+    }
+  </style>
 </head>
 
 <body>
   {{> ../partials/header}}
   <h1 class="chart-title">Coin Stars - BTC (in development)</h1>
   <div id="chart-area-2"></div>
-  <div class="controls"></div>
+  <div class="controls">
+    <div class="center">
+      <button class="range-button" range="30">1m</button>
+      <button class="range-button" range="90">3m</button>
+      <button class="range-button" range="180">6m</button>
+      <button class="range-button" range="365">1y</button>
+      <button class="range-button" range=>all</button>
+    </div>
+  </div>
   <script src="/assets/d3.v5.js"></script>
   <script src="/assets/margin.js"></script>
   <script src="/assets/scales-diagram.js"></script>
