@@ -9,9 +9,89 @@
  * @param {function} ySelector - The selector for data array y dimension
  */
 class LineChart extends AxisDiagram {
+  constructor(...args) {
+    super(...args);
+
+    this.hideFocus = this.hideFocus.bind(this);
+    this.handlePointerMove = this.handlePointerMove.bind(this);
+
+    this.bisectDate = d3.bisector(this.xSelector).left;
+    this.initTooltip();
+  }
+
   initScales() {
     super.initScales();
     this.xScale = d3.scaleTime().range([0, this.width]);
+  }
+
+  handleResize(...attrs) {
+    super.handleResize(...attrs);
+    this.focus
+      .select('line')
+      .attr('x1', 0)
+      .attr('y1', this.height)
+      .attr('visibility', 'hidden');
+  }
+
+  initTooltip() {
+    this.diagram
+      .append('rect')
+      .attr('width', this.width)
+      .attr('height', this.height)
+      .attr('fill', 'none')
+      .attr('pointer-events', 'all')
+      .on('touchmove', this.handlePointerMove)
+      .on('mousemove', this.handlePointerMove)
+      .on('mouseout', this.hideFocus);
+
+    this.focus = this.diagram.append('g');
+    this.focus
+      .append('line')
+      .attr('x1', 0)
+      .attr('y1', this.height)
+      .attr('visibility', 'hidden')
+      .attr('stroke', 'red');
+    this.focus
+      .append('text')
+      .attr('y', 100)
+      .attr('x', 15)
+      .attr('dy', '.31em');
+  }
+
+  handlePointerMove(a1, a2, [rect]) {
+    const [xCoord] = d3.mouse(rect);
+
+    if (xCoord > rect.getBoundingClientRect().width) {
+      return;
+    }
+
+    const x = this.xScale.invert(xCoord);
+    const i = this.bisectDate(this.data, x, 1);
+    const d = this.data[i];
+    this.setFocus(d);
+  }
+
+  hideFocus() {
+    this.focus.select('line').attr('visibility', 'hidden');
+  }
+
+  setFocus(d) {
+    const x = this.xScale(this.xSelector(d));
+    const y = this.yScaleReverse(this.ySelector(d));
+
+    this.focus
+      .select('line')
+      .attr('visibility', 'visible')
+      .attr('x1', x)
+      .attr('x2', x)
+      .attr('y2', y);
+
+    this.focus
+      .select('text')
+      .attr('x', x)
+
+      .attr('text-anchor', 'end')
+      .text(this.ySelector(d));
   }
 
   createElements(elements) {
