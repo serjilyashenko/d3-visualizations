@@ -16,7 +16,7 @@ class Tooltip {
   }
 
   setLeftPosition() {
-    this.offset = { ...RIGHT_OFFSET, left: -this.width - 13 };
+    this.offset = Object.assign({}, RIGHT_OFFSET, { left: -this.width - 13 });
     this.tooltip.classed('tooltip_left', true);
     return this;
   }
