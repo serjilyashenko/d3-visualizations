@@ -16,13 +16,14 @@ class Circle {
  * @param {function} ySelector - The selector for data array y dimension
  */
 class LineChart extends AxisDiagram {
-  constructor(...args) {
-    super(...args);
+  constructor(selector, margin, ...rest) {
+    super(selector, margin, ...rest);
+
+    this.tooltip = new Tooltip(selector, margin);
+    this.bisectDate = d3.bisector(this.xSelector).left;
 
     this.hideFocus = this.hideFocus.bind(this);
     this.handlePointerMove = this.handlePointerMove.bind(this);
-
-    this.bisectDate = d3.bisector(this.xSelector).left;
   }
 
   initScales() {
@@ -79,6 +80,7 @@ class LineChart extends AxisDiagram {
       .enter()
       .append('circle')
       .style('display', 'none')
+      .style('pointer-events', 'none')
       .attr('fill', d => d.fill)
       .attr('r', d => d.r);
   }
@@ -109,17 +111,14 @@ class LineChart extends AxisDiagram {
     const x = this.xScale(this.xSelector(d));
     const y = this.yScaleReverse(this.ySelector(d));
 
+    const tooltipHTML = `<div class="content">1BTC = <span class="label">${this.ySelector(d)}$</span></div>`;
+    this.tooltip.setLeftPosition().render(x, y, tooltipHTML);
+
     this.focus
       .select('line')
       .style('display', null)
       .attr('x1', x)
       .attr('x2', x);
-    this.focus
-      .select('text')
-      .attr('x', x)
-      .style('display', null)
-      .attr('text-anchor', 'end')
-      .text(this.ySelector(d));
     this.focus
       .selectAll('circle')
       .style('display', null)
