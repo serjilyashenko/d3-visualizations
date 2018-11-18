@@ -41,6 +41,7 @@ class LineChart extends AxisDiagram {
       .attr('fill', 'none')
       .attr('pointer-events', 'all')
       .on('touchmove', this.handlePointerMove)
+      .on('touchstart', this.handleTouchStart)
       .on('mousemove', this.handlePointerMove)
       .on('mouseout', this.hideFocus);
 
@@ -56,6 +57,10 @@ class LineChart extends AxisDiagram {
       .attr('y', 100)
       .attr('x', 15)
       .attr('dy', '.31em');
+  }
+
+  handleTouchStart() {
+    d3.event.preventDefault();
   }
 
   handlePointerMove(a1, a2, [rect]) {
