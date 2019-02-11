@@ -152,6 +152,8 @@ h1.chart-title {
 }
 
 .player-button:hover {
+  width: 32px;
+  height: 31px;
   opacity: 0.6;
   transition: opacity 1s;
 }

@@ -32,25 +32,27 @@
 .slider .slider__control-area .slider__pointer {
   position: absolute;
   top: 3px;
+  margin-left: -13px;
   content: ' ';
   width: 24px;
   height: 24px;
-  margin-left: -12px;
   background: #eeeeee;
   border: 1px solid #cbcbcb;
   border-radius: 50%;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
   pointer-events: none;
   transition: opacity 0.5s;
-  transition: left 0.1s linear;
+  transition: top 0.1s, width 0.1s, height 0.1s, left 0.3s;
 }
 
-.slider:hover .slider__control-area .slider__pointer {
-  transition: opacity 0.5s;
-  transition: left 0.1s linear;
+.slider:active .slider__control-area .slider__pointer {
+  top: 1px;
+  margin-left: -14px;
+  width: 28px;
+  height: 28px;
+  transition: top 0.1s, width 0.1s, height 0.1s;
 }
 
 .slider .slider__control-area.slider__control-area_transition-stop .slider__pointer {
-  transition: opacity 0.5s;
-  transition: left none;
+  transition: opacity 0.1s, top 0.1s, width 0.1s, height 0.1s, left none;
 }
