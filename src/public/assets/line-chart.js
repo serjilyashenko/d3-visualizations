@@ -56,6 +56,19 @@ class LineChart extends AxisDiagram {
     this.initFocus();
   }
 
+  showTooltip({ x, y, btcRate, dateObj }) {
+    const date = dateObj.getDate();
+    const month = dateObj.toLocaleString('en-us', { month: 'short' });
+    const year = dateObj.getFullYear();
+    const tooltipHTML = `
+    <div class="content">
+      <div><b>${date} ${month} ${year}</b></div>
+      <div>1BTC = <span class="label">${btcRate}$</div>
+    </span></div>
+    `;
+    this.tooltip.setLeftPosition().render(x, y, tooltipHTML);
+  }
+
   initFocus() {
     this.focus = this.diagram.append('g');
     this.focus
@@ -111,8 +124,13 @@ class LineChart extends AxisDiagram {
     const x = this.xScale(this.xSelector(d));
     const y = this.yScaleReverse(this.ySelector(d));
 
-    const tooltipHTML = `<div class="content">1BTC = <span class="label">${this.ySelector(d)}$</span></div>`;
-    this.tooltip.setLeftPosition().render(x, y, tooltipHTML);
+    const tooltipData = {
+      x,
+      y,
+      btcRate: this.ySelector(d),
+      dateObj: new Date(d.key)
+    };
+    this.showTooltip(tooltipData);
 
     this.focus
       .select('line')
