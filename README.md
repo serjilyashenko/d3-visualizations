@@ -5,6 +5,7 @@ Application test drive is [here](https://d3visualizations.herokuapp.com/).
 - Bar Chart
 - Scatter Plot
 - GapMinder
+- Coin Stars
 
 ![Demo Image](./demo-images/gapminder.png)
 
