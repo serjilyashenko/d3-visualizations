@@ -1,4 +1,4 @@
-/* global d3, Margin, AxisDiagram */
+/* global d3, Margin, BarChart */
 
 (async function() {
   const selector = '#chart-area';

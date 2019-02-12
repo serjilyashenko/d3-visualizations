@@ -1,22 +1,11 @@
-/* global Margin, ScalesDiagram */
-
 /**
- * Class representing diagram with Axis rendering
- * @requires d3
+ * Class representing Axis for Dependency Injection into chart classes
  * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
+ * @param {Object} Chart - One of charts
  */
-class AxisDiagram extends ScalesDiagram {
-  /**
-   * Create an axis diagram instance
-   * @constructor
-   * @param {string} selector - The css selector
-   * @param {Margin} margin - The instance of the Margin class
-   * @param {function} xSelector - The selector from data array for x dimension
-   * @param {function} ySelector - The selector for data array y dimension
-   */
-  constructor(selector, margin, xSelector, ySelector) {
-    super(selector, margin, xSelector, ySelector);
-
+class Axis {
+  constructor(chart) {
+    this.chart = chart;
     this.xAxisGroup = null;
     this.yAxisGroup = null;
     this.initAxis();
@@ -25,27 +14,32 @@ class AxisDiagram extends ScalesDiagram {
     this.yLabelElement = this.createYLabel();
   }
 
+  get width() {
+    return this.chart.width;
+  }
+
+  get height() {
+    return this.chart.height;
+  }
+
   handleResize() {
-    super.handleResize();
     this.resizeAxis();
     this.resizeXLabel();
     this.resizeYLabel();
   }
 
   getXAxis() {
-    return d3.axisBottom(this.xScale);
+    return d3.axisBottom(this.chart.xScale);
   }
 
   getYAxis() {
-    return d3.axisLeft(this.yScaleReverse);
+    return d3.axisLeft(this.chart.yScaleReverse);
   }
 
   initAxis() {
-    this.xAxisGroup = this.diagram.append('g');
-    this.yAxisGroup = this.diagram.append('g');
-    this.xScale.range([0, this.width]);
-    this.yScale.range([0, this.height]);
-    this.yScaleReverse.range([this.height, 0]);
+    const diagram = this.chart.diagram;
+    this.xAxisGroup = diagram.append('g');
+    this.yAxisGroup = diagram.append('g');
     const xAxis = this.getXAxis().ticks(0);
     const yAxis = this.getYAxis().ticks(0);
     this.xAxisGroup.call(xAxis).attr('transform', `translate(0, ${this.height})`);
@@ -58,9 +52,6 @@ class AxisDiagram extends ScalesDiagram {
   resizeXAxis() {}
 
   resizeAxis() {
-    this.xScale.range([0, this.width]);
-    this.yScale.range([0, this.height]);
-    this.yScaleReverse.range([this.height, 0]);
     const xAxis = this.getXAxis();
     const yAxis = this.getYAxis();
     this.xAxisGroup.call(xAxis).attr('transform', `translate(0, ${this.height})`);
@@ -105,9 +96,11 @@ class AxisDiagram extends ScalesDiagram {
   }
 
   createXLabel() {
-    return this.diagram
+    return this.chart.diagram
       .append('text')
       .attr('class', 'x-axis-label')
+      .attr('x', this.width / 2)
+      .attr('y', this.height + 60)
       .attr('text-anchor', 'middle')
       .attr('font-size', '20px');
   }
@@ -121,7 +114,7 @@ class AxisDiagram extends ScalesDiagram {
   }
 
   createYLabel() {
-    return this.diagram
+    return this.chart.diagram
       .append('text')
       .attr('class', 'y-axis-label')
       .attr('x', -this.height / 2)

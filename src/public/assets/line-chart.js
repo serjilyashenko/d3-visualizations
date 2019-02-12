@@ -1,4 +1,4 @@
-/* global d3, AxisDiagram */
+/* global d3, ScalesDiagram */
 
 class Circle {
   constructor(fill, r) {
@@ -15,9 +15,11 @@ class Circle {
  * @param {function} xSelector - The selector from data array for x dimension
  * @param {function} ySelector - The selector for data array y dimension
  */
-class LineChart extends AxisDiagram {
+class LineChart extends ScalesDiagram {
   constructor(selector, margin, ...rest) {
     super(selector, margin, ...rest);
+
+    this.axis = new Axis(this);
 
     this.tooltip = new Tooltip(selector, margin);
     this.bisectDate = d3.bisector(this.xSelector).left;
@@ -154,8 +156,8 @@ class LineChart extends AxisDiagram {
 
   updateElements(elements) {
     const t = d3.transition().duration(700);
-    this.updateXAxis(t);
-    this.updateYAxis(t);
+    this.axis.updateXAxis(t);
+    this.axis.updateYAxis(t);
     this.elements.transition().attr('d', this.line(this.data));
   }
 
@@ -163,8 +165,8 @@ class LineChart extends AxisDiagram {
     this.line.y(d => this.yScaleReverse(this.ySelector(d)));
 
     const t = d3.transition().duration(700);
-    this.firstUpdateXAxis(t);
-    this.firstUpdateYAxis(t);
+    this.axis.firstUpdateXAxis(t);
+    this.axis.firstUpdateYAxis(t);
 
     this.elements
       .transition()

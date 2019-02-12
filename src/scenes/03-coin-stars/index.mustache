@@ -3,6 +3,7 @@
 
 <head>
   {{> ../partials/head}}
+  <link rel="stylesheet" type="text/css" href="/css/coin-stars.css">
   <style>
     .controls .center {
       padding: 10px 0 0 60px;
@@ -15,6 +16,7 @@
   {{> ../partials/header}}
   <h1 class="chart-title">Coin Stars - BTC (in development)</h1>
   <div id="chart-area-2"></div>
+  <div id="chart-slider"></div>
   <div class="controls">
     <div class="center">
       <button class="range-button" range="30">1m</button>
@@ -27,7 +29,8 @@
   <script src="/assets/d3.v5.js"></script>
   <script src="/assets/margin.js"></script>
   <script src="/assets/scales-diagram.js"></script>
-  <script src="/assets/axis-diagram.js"></script>
+  <script src="/assets/axis.js"></script>
+  <script src="/assets/scale-line.js"></script>
   <script src="/assets/line-chart.js"></script>
   <script src="/assets/tooltip.js"></script>
   <script src="coin-stars.js"></script>

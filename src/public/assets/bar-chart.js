@@ -1,4 +1,4 @@
-/* global d3, AxisDiagram */
+/* global d3, ScalesDiagram, BarChartAxis */
 
 /**
  * Class representing Bar-Chart diagram with Axis
@@ -8,7 +8,18 @@
  * @param {function} xSelector - The selector from data array for x dimension
  * @param {function} ySelector - The selector for data array y dimension
  */
-class BarChart extends AxisDiagram {
+class BarChart extends ScalesDiagram {
+  constructor(selector, margin, xSelector, ySelector) {
+    super(selector, margin, xSelector, ySelector);
+
+    this.axis = new BarChartAxis(this);
+  }
+
+  handleResize() {
+    super.handleResize();
+    this.axis.handleResize();
+  }
+
   initScales() {
     super.initScales();
     this.xScale.paddingOuter(0.3).paddingInner(0.3);
@@ -17,30 +28,6 @@ class BarChart extends AxisDiagram {
   xExtent(data) {
     // Use months on x-axis (array of strings)
     return data.map(this.xSelector);
-  }
-
-  getYAxis() {
-    return super.getYAxis().tickFormat(d => `$${d}`);
-  }
-
-  set xLabel(text) {
-    this.xLabelElement
-      .attr('opacity', 0)
-      .text(text)
-      .transition()
-      .duration(500)
-      .delay(200)
-      .attr('opacity', 1);
-  }
-
-  set yLabel(text) {
-    this.yLabelElement
-      .attr('opacity', 0)
-      .text(text)
-      .transition()
-      .duration(500)
-      .delay(200)
-      .attr('opacity', 1);
   }
 
   createElements(elements) {
@@ -81,23 +68,10 @@ class BarChart extends AxisDiagram {
       .attr('width', this.xScale.bandwidth);
   }
 
-  updateXAxis(transition) {
-    const xAxis = this.getXAxis();
-    this.xAxisGroup
-      .transition(transition)
-      .call(xAxis)
-      .selectAll('text')
-      .attr('y', 10)
-      .attr('x', -5)
-      .attr('text-anchor', 'end')
-      .attr('transform', 'rotate(-40)');
-    return this.xAxisGroup;
-  }
-
   firstDraw() {
     const t = d3.transition().duration(700);
-    this.updateXAxis(t);
-    this.firstUpdateYAxis(t);
+    this.axis.updateXAxis(t);
+    this.axis.firstUpdateYAxis(t);
     this.updateElements(
       this.elements
         .transition()
@@ -114,14 +88,14 @@ class BarChart extends AxisDiagram {
       .transition()
       .duration(400)
       .delay(400);
-    this.updateYAxis(t2);
+    this.axis.updateYAxis(t2);
     this.secondUpdate(elements.transition(t2));
 
     const t3 = d3
       .transition()
       .duration(200)
       .delay(800);
-    this.updateXAxis(t3);
+    this.axis.updateXAxis(t3);
     this.thirdUpdate(elements, t3);
 
     const t4 = d3
@@ -129,6 +103,14 @@ class BarChart extends AxisDiagram {
       .duration(400)
       .delay(1000);
     this.updateElements(this.elements.transition(t4));
+  }
+
+  set xLabel(text) {
+    this.axis.xLabel = text;
+  }
+
+  set yLabel(text) {
+    this.axis.yLabel = text;
   }
 
   draw(data) {
