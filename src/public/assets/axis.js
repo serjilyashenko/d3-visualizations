@@ -1,11 +1,13 @@
 /**
  * Class representing Axis for Dependency Injection into chart classes
  * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
- * @param {Object} Chart - One of charts
+ * @param {Object} diagram - A svgCanvas d3 wrapped of the Chart
+ * @param {Object} scales - A set of scales
  */
 class Axis {
-  constructor(chart) {
-    this.chart = chart;
+  constructor(diagram, getScales) {
+    this.diagram = diagram;
+    this.getScales = getScales;
     this.xAxisGroup = null;
     this.yAxisGroup = null;
     this.initAxis();
@@ -15,11 +17,11 @@ class Axis {
   }
 
   get width() {
-    return this.chart.width;
+    return this.getScales().width;
   }
 
   get height() {
-    return this.chart.height;
+    return this.getScales().height;
   }
 
   handleResize() {
@@ -29,15 +31,15 @@ class Axis {
   }
 
   getXAxis() {
-    return d3.axisBottom(this.chart.xScale);
+    return d3.axisBottom(this.getScales().xScale);
   }
 
   getYAxis() {
-    return d3.axisLeft(this.chart.yScaleReverse);
+    return d3.axisLeft(this.getScales().yScaleReverse);
   }
 
   initAxis() {
-    const diagram = this.chart.diagram;
+    const diagram = this.diagram;
     this.xAxisGroup = diagram.append('g');
     this.yAxisGroup = diagram.append('g');
     const xAxis = this.getXAxis().ticks(0);
@@ -52,9 +54,10 @@ class Axis {
   resizeXAxis() {}
 
   resizeAxis() {
+    const { height } = this.getScales();
     const xAxis = this.getXAxis();
     const yAxis = this.getYAxis();
-    this.xAxisGroup.call(xAxis).attr('transform', `translate(0, ${this.height})`);
+    this.xAxisGroup.call(xAxis).attr('transform', `translate(0, ${height})`);
     this.yAxisGroup.call(yAxis);
   }
 
@@ -96,17 +99,19 @@ class Axis {
   }
 
   createXLabel() {
-    return this.chart.diagram
+    const { width, height } = this.getScales();
+    return this.diagram
       .append('text')
       .attr('class', 'x-axis-label')
-      .attr('x', this.width / 2)
-      .attr('y', this.height + 60)
+      .attr('x', width / 2)
+      .attr('y', height + 60)
       .attr('text-anchor', 'middle')
       .attr('font-size', '20px');
   }
 
   resizeXLabel() {
-    this.xLabelElement.attr('x', this.width / 2).attr('y', this.height + 60);
+    const { width, height } = this.getScales();
+    this.xLabelElement.attr('x', width / 2).attr('y', height + 60);
   }
 
   set xLabel(text) {
@@ -114,17 +119,19 @@ class Axis {
   }
 
   createYLabel() {
-    return this.chart.diagram
+    const { height } = this.getScales();
+    return this.diagram
       .append('text')
       .attr('class', 'y-axis-label')
-      .attr('x', -this.height / 2)
+      .attr('x', -height / 2)
       .attr('y', -60)
       .attr('font-size', '20px')
       .attr('transform', 'rotate(-90)');
   }
 
   resizeYLabel() {
-    this.yLabelElement.attr('x', -this.height / 2);
+    const { height } = this.getScales();
+    this.yLabelElement.attr('x', -height / 2);
   }
 
   set yLabel(text) {

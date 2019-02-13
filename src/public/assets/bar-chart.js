@@ -12,7 +12,13 @@ class BarChart extends ScalesDiagram {
   constructor(selector, margin, xSelector, ySelector) {
     super(selector, margin, xSelector, ySelector);
 
-    this.axis = new BarChartAxis(this);
+    const getScales = () => ({
+      width: this.width,
+      height: this.height,
+      xScale: this.xScale,
+      yScaleReverse: this.yScaleReverse
+    });
+    this.axis = new BarChartAxis(this.diagram, getScales);
   }
 
   handleResize() {

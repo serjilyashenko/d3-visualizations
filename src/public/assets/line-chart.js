@@ -12,8 +12,6 @@ class LineChart extends ScalesDiagram {
   constructor(selector, margin, ...rest) {
     super(selector, margin, ...rest);
 
-    this.axis = new Axis(this);
-
     const getScales = () => ({
       selector: this.selector,
       width: this.width,
@@ -24,6 +22,8 @@ class LineChart extends ScalesDiagram {
       yScaleReverse: this.yScaleReverse
     });
     const getData = () => this.data || null;
+
+    this.axis = new Axis(this.diagram, getScales);
     this.pointer = new LineChartPointer(this.diagram, margin, getScales, getData);
   }
 
