@@ -16,6 +16,7 @@ class ScalesDiagram {
    * @param {Margin} margin - The instance of the Margin class
    */
   constructor(selector, margin, xSelector, ySelector) {
+    this.selector = selector;
     this.t = d3.transition().duration(400);
     this.chartArea = d3.select(selector);
     this.margin = margin;
