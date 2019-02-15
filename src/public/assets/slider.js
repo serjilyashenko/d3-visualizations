@@ -8,10 +8,11 @@ class Slider {
    * @param {string} slider - The slider html element id
    */
   constructor(sliderId) {
-    if (!slider) {
+    if (!sliderId) {
       throw new Error('Slider Constructor needs a slider HTML element!');
     }
-    this.slider = window.document.getElementById(sliderId);
+    const slider = window.document.getElementById(sliderId);
+    this.slider = slider;
     this.controlArea = slider.querySelector('.slider .slider__control-area');
     this.pointer = slider.querySelector('.slider .slider__pointer');
     this.handleMove = this._handleMove.bind(this);

@@ -1,4 +1,15 @@
-#chart-slider {
+.coin-stars-chart-area {
+  position: relative;
+  height: 60vh;
+  max-height: 500px;
+}
+
+.chart-slider-area {
+  width: 100%;
+  height: 100%;
+}
+
+.d-slider-wrapper {
   height: 60px;
   margin-left: 60px;
   border: 1px solid #777;
