@@ -17,7 +17,6 @@ class DoubleSlider {
     this.minPositionDiff = minPositionDiff || 70;
     this.lowPosition = minPosition;
     this.highPosition = maxPosition;
-    // this.highPosition = 500;
 
     this.pointerLow = slider.querySelector('.d-slider .d-slider__pointer.d-slider__pointer_low');
     this.pointerHigh = slider.querySelector('.d-slider .d-slider__pointer.d-slider__pointer_high');
@@ -41,23 +40,6 @@ class DoubleSlider {
   static range(x, min = 0, max = 100) {
     const lowLimited = Math.max(x, min);
     return Math.min(lowLimited, max);
-  }
-
-  lowCoordinateRange(coordinate) {
-    return DoubleSlider.range(coordinate, 0, this.width - this.minCoordinateDiff);
-  }
-
-  highCoordinateRange(coordinate) {
-    return DoubleSlider.range(coordinate, this.minCoordinateDiff, this.width);
-  }
-
-  lowPositionRange(position) {
-    const maxLowPosition = this.maxPosition - this.minPosition - this.minPositionDiff;
-    return DoubleSlider.range(position, this.minPosition, maxLowPosition);
-  }
-
-  highPositionRange(position) {
-    return DoubleSlider.range(position, this.minPositionDiff, this.maxPosition);
   }
 
   get lowCoordinate() {
@@ -98,8 +80,24 @@ class DoubleSlider {
     this.pointerHigh.addEventListener('mousedown', this.onPointerHighStart);
     this.pointerHigh.addEventListener('touchstart', this.onPointerStart);
 
-    this.setLowPosition(this.lowPosition);
-    this.setHighCoordinate(this.highCoordinate);
+    this.applyCoordinates();
+  }
+
+  lowCoordinateRange(coordinate) {
+    return DoubleSlider.range(coordinate, 0, this.width - this.minCoordinateDiff);
+  }
+
+  highCoordinateRange(coordinate) {
+    return DoubleSlider.range(coordinate, this.minCoordinateDiff, this.width);
+  }
+
+  lowPositionRange(position) {
+    const maxLowPosition = this.maxPosition - this.minPosition - this.minPositionDiff;
+    return DoubleSlider.range(position, this.minPosition, maxLowPosition);
+  }
+
+  highPositionRange(position) {
+    return DoubleSlider.range(position, this.minPositionDiff, this.maxPosition);
   }
 
   onPointerLowStart() {
@@ -124,47 +122,87 @@ class DoubleSlider {
 
   onLowPointerMove(e) {
     this.lowCoordinate = this.getMoveLowCoordinate(e);
-    if (this.highCoordinate - this.lowCoordinate < this.minCoordinateDiff) {
-      this.highCoordinate = this.lowCoordinate + this.minCoordinateDiff;
-      this.setHighCoordinate(this.highCoordinate);
-    }
-    this.setLowCoordinate(this.lowCoordinate);
+    this.correctHighCoordinate();
+    this.applyCoordinates();
   }
 
   onHighPointerMove(e) {
     this.highCoordinate = this.getMoveHighCoordinate(e);
+    this.correctLowCoordinate();
+    this.applyCoordinates();
+  }
+
+  onPointerEnd() {
+    this.controlArea.removeEventListener('mousemove', this.onLowPointerMove);
+    this.controlArea.removeEventListener('mousemove', this.onHighPointerMove);
+    document.body.removeEventListener('mouseup', this.onPointerLowEnd);
+    document.body.removeEventListener('mouseup', this.onPointerHighEnd);
+  }
+
+  correctLowCoordinate() {
     if (this.highCoordinate - this.lowCoordinate < this.minCoordinateDiff) {
       this.lowCoordinate = this.highCoordinate - this.minCoordinateDiff;
-      this.setLowCoordinate(this.lowCoordinate);
     }
-    this.setHighCoordinate(this.highCoordinate);
   }
 
-  /**
-   * Apply new low coordinate to slider DOM element
-   * @param {number} coordinate - The Low Slider coordinate (px)
-   */
-  setLowCoordinate(coordinate) {
-    // console.log('range: ', this.lowPosition, this.highPosition);
-    this.pointerLow.style.width = `${coordinate}px`;
-  }
-
-  /**
-   * Apply new high coordinate to slider DOM element
-   * @param {number} coordinate - The Low Slider coordinate (px)
-   */
-  setHighCoordinate(coordinate) {
-    this.pointerHigh.style.width = `${this.width - coordinate}px`;
+  correctHighCoordinate() {
+    if (this.highCoordinate - this.lowCoordinate < this.minCoordinateDiff) {
+      this.highCoordinate = this.lowCoordinate + this.minCoordinateDiff;
+    }
   }
 
   setLowPosition(position) {
     if (isNaN(Number(position))) {
       throw new Error('New position needs to be a number');
     }
-    const p = this.lowPositionRange(position);
-    this.lowPosition = p;
-    const coordinate = this.convertToCoordinate(p);
-    this.setLowCoordinate(coordinate);
+    const lp = this.lowPositionRange(position);
+    this.lowCoordinate = this.convertToCoordinate(lp);
+
+    this.correctHighCoordinate();
+    this.applyCoordinates();
+  }
+
+  setHighPosition(position) {
+    if (isNaN(Number(position))) {
+      throw new Error('New position needs to be a number');
+    }
+    const hp = this.highPositionRange(position);
+    this.highCoordinate = this.convertToCoordinate(hp);
+
+    this.correctLowCoordinate();
+    this.applyCoordinates();
+  }
+
+  setPositionRange(lowPosition, highPosition) {
+    const lp = this.lowPositionRange(lowPosition);
+    const hp = this.highPositionRange(highPosition);
+
+    this.lowCoordinate = this.convertToCoordinate(lp);
+    this.highCoordinate = this.convertToCoordinate(hp);
+
+    this.correctHighCoordinate();
+    this.applyCoordinates();
+  }
+
+  /**
+   * Apply new low coordinate to slider DOM element
+   * @param {number} coordinate - The Low Slider coordinate (px)
+   */
+  applyLowCoordinate() {
+    this.pointerLow.style.width = `${this.lowCoordinate}px`;
+  }
+
+  /**
+   * Apply new high coordinate to slider DOM element
+   * @param {number} coordinate - The Low Slider coordinate (px)
+   */
+  applyHighCoordinate() {
+    this.pointerHigh.style.width = `${this.width - this.highCoordinate}px`;
+  }
+
+  applyCoordinates() {
+    this.applyLowCoordinate();
+    this.applyHighCoordinate();
   }
 
   convertToCoordinate(position) {
@@ -175,12 +213,5 @@ class DoubleSlider {
   convertToPosition(coordinate) {
     const positionRange = this.maxPosition - this.minPosition;
     return Math.round((coordinate * positionRange) / this.width);
-  }
-
-  onPointerEnd() {
-    this.controlArea.removeEventListener('mousemove', this.onLowPointerMove);
-    this.controlArea.removeEventListener('mousemove', this.onHighPointerMove);
-    document.body.removeEventListener('mouseup', this.onPointerLowEnd);
-    document.body.removeEventListener('mouseup', this.onPointerHighEnd);
   }
 }
