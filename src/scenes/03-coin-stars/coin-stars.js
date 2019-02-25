@@ -5,7 +5,9 @@
   const diagramMargin = new Margin(50, 10, 20, 60);
   const sliderDiagram = new ScaleLine('#chart-slider-area', sliderLineMargin, d => new Date(d.key), d => d.value);
   const diagram = new LineChart('#coin-stars-chart-area', diagramMargin, d => new Date(d.key), d => d.value);
-  const dSlider = new DoubleSlider('d-slider');
+  const dSlider = new DoubleSlider('d-slider', 1, 1001, 200);
+
+  // dSlider.setLowPosition(100000);
 
   const startDate = '2013-09-01';
   const endDate = d3.timeFormat('%Y-%m-%d')(new Date());
