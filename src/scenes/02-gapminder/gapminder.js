@@ -1,4 +1,4 @@
-/* global d3, Margin, Slider */
+/* global d3, Margin, Slider, Spinner */
 
 /**
  * Class representing Gapminder diagram rendering
@@ -75,6 +75,8 @@ const GapminderLegacy = async function() {
   const width = canvasWidth - margin.left - margin.right;
   const height = canvasHeight - margin.top - margin.bottom;
   const t = d3.transition().duration(1000);
+  const spinner = new Spinner(margin);
+  spinner.show();
 
   const svg = chartArea
     .append('svg')
@@ -235,6 +237,8 @@ const GapminderLegacy = async function() {
 
   // Waiting until initialDraw finish
   await new Promise(resolve => setTimeout(() => resolve(), 750));
+
+  spinner.hide();
 
   const show = index => {
     // TODO: optimize this. It is enough to filter ones.

@@ -1,5 +1,11 @@
 /* global document, Margin */
 
+/**
+ * Class representing Spinner
+ * NOTE: It is necessary to supply '/img/spinner.gif' file
+ * @author Serj Ilyashenko <serj.ilaysenko@gmail.com>
+ * @param {Margin} margin - The instance of the Margin class
+ */
 class Spinner {
   constructor(margin) {
     this.spinnerElement = document.createElement('img');
