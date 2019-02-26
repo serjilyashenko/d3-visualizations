@@ -1,10 +1,12 @@
-/* global Margin, LineChart, ScaleLine */
+/* global Margin, LineChart, ScaleLine, Spinner */
 
 (async function() {
   const sliderLineMargin = new Margin(1, 0, 1, 0);
   const diagramMargin = new Margin(50, 10, 20, 60);
   const sliderDiagram = new ScaleLine('#chart-slider-area', sliderLineMargin, d => new Date(d.key), d => d.value);
   const diagram = new LineChart('#coin-stars-chart-area', diagramMargin, d => new Date(d.key), d => d.value);
+  const spinner = new Spinner(diagramMargin);
+  spinner.show();
 
   const startDate = '2013-09-01';
   const endDate = d3.timeFormat('%Y-%m-%d')(new Date());
@@ -32,6 +34,7 @@
   });
 
   // Draw section
+  spinner.hide();
   sliderDiagram.draw(allRange);
 
   dSlider.setPositionRange(allRange.length - initRange.length, allRange.length);
