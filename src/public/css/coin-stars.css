@@ -15,6 +15,14 @@
   border: 1px solid #777;
 }
 
+.controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 0 0 0 50px;
+  width: calc(100% - 50px);
+}
+
 .range-button {
   background-color: #4caf50;
   color: white;
@@ -24,7 +32,7 @@
   transition-duration: 0.4s;
   min-width: 40px;
   height: 23px;
-  margin-right: 17px;
+  margin: 10px 17px 0;
 }
 
 .range-button:hover {
