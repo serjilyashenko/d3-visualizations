@@ -45,11 +45,17 @@ class LineChart extends ScalesDiagram {
     return elements.attr('d', this.line(this.data));
   }
 
-  updateElements(elements) {
-    const t = d3.transition().duration(700);
+  updateElements(noTransition) {
+    const t = d3.transition(0).duration(700);
+    let elements = this.elements;
     this.axis.updateXAxis(t);
     this.axis.updateYAxis(t);
-    this.elements.transition().attr('d', this.line(this.data));
+
+    if (!noTransition) {
+      elements = elements.transition();
+    }
+
+    elements.attr('d', this.line(this.data));
   }
 
   firstDraw() {
@@ -66,7 +72,7 @@ class LineChart extends ScalesDiagram {
       .attr('d', this.line(this.data));
   }
 
-  draw(data) {
+  draw(data, noTransition) {
     super.draw(data);
 
     this.data = data;
@@ -84,7 +90,7 @@ class LineChart extends ScalesDiagram {
       this.elements = newElements;
       this.firstDraw(data);
     } else {
-      this.updateElements();
+      this.updateElements(noTransition);
     }
   }
 }

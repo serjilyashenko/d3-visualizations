@@ -27,6 +27,9 @@ class DoubleSlider {
     this.onHighPointerMove = this.onHighPointerMove.bind(this);
     this.onPointerEnd = this.onPointerEnd.bind(this);
 
+    this.callbacks = new Set();
+    this.disabled = false;
+
     this.init();
   }
 
@@ -101,11 +104,17 @@ class DoubleSlider {
   }
 
   onPointerLowStart() {
+    if (this.disabled) {
+      return;
+    }
     this.controlArea.addEventListener('mousemove', this.onLowPointerMove);
     document.body.addEventListener('mouseup', this.onPointerEnd);
   }
 
   onPointerHighStart() {
+    if (this.disabled) {
+      return;
+    }
     this.controlArea.addEventListener('mousemove', this.onHighPointerMove);
     document.body.addEventListener('mouseup', this.onPointerEnd);
   }
@@ -124,12 +133,14 @@ class DoubleSlider {
     this.lowCoordinate = this.getMoveLowCoordinate(e);
     this.correctHighCoordinate();
     this.applyCoordinates();
+    this.notifyChange();
   }
 
   onHighPointerMove(e) {
     this.highCoordinate = this.getMoveHighCoordinate(e);
     this.correctLowCoordinate();
     this.applyCoordinates();
+    this.notifyChange();
   }
 
   onPointerEnd() {
@@ -213,5 +224,35 @@ class DoubleSlider {
   convertToPosition(coordinate) {
     const positionRange = this.maxPosition - this.minPosition;
     return Math.round((coordinate * positionRange) / this.width);
+  }
+
+  enable() {
+    this.disabled = false;
+  }
+
+  disable() {
+    this.disabled = true;
+  }
+
+  onChange(cb) {
+    if (typeof cb !== 'function') {
+      return () => {};
+    }
+    this.callbacks.add(cb);
+    return () => {
+      this.callbacks.delete(cb);
+    };
+  }
+
+  unsubscribe(cb) {
+    this.callbacks.delete(cb);
+  }
+
+  notifyChange() {
+    this.callbacks.forEach(cb => {
+      if (typeof cb === 'function') {
+        cb(this.lowPosition, this.highPosition);
+      }
+    });
   }
 }

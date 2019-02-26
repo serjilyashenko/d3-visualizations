@@ -15,6 +15,9 @@
 
 .d-slider__control-area {
   height: 100%;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-app-region: no-drag;
 }
 
 .d-slider__pointer {
@@ -22,6 +25,13 @@
   top: 0;
   height: 100%;
   background: rgba(173, 255, 47, 0.2);
+  transition: width 0.7s ease-out;
+  -webkit-transition: width 0.7s ease-out;
+}
+
+.d-slider__control-area:active .d-slider__pointer {
+  transition: none;
+  -webkit-transition: none;
 }
 
 .d-slider__pointer_low {

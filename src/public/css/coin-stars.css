@@ -14,3 +14,20 @@
   margin-left: 60px;
   border: 1px solid #777;
 }
+
+.range-button {
+  background-color: #4caf50;
+  color: white;
+  border: 1px solid #4caf50;
+  border-radius: 5px;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  min-width: 40px;
+  height: 23px;
+  margin-right: 17px;
+}
+
+.range-button:hover {
+  background-color: white;
+  color: black;
+}

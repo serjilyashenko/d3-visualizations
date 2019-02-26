@@ -5,10 +5,6 @@
   const diagramMargin = new Margin(50, 10, 20, 60);
   const sliderDiagram = new ScaleLine('#chart-slider-area', sliderLineMargin, d => new Date(d.key), d => d.value);
   const diagram = new LineChart('#coin-stars-chart-area', diagramMargin, d => new Date(d.key), d => d.value);
-  const dSlider = new DoubleSlider('d-slider', 1, 1001, 200);
-
-  dSlider.setPositionRange(200, 500);
-  dSlider.setHighPosition(800);
 
   const startDate = '2013-09-01';
   const endDate = d3.timeFormat('%Y-%m-%d')(new Date());
@@ -18,15 +14,32 @@
   const allRange = d3.map(rawData.bpi).entries();
   const initRange = allRange.slice(-1 * 180);
 
-  await new Promise(resolve => setTimeout(resolve, 500));
+  // The Double Slider initialization
+  const dSlider = new DoubleSlider('d-slider', 0, allRange.length, 30);
+  dSlider.disable();
 
+  await new Promise(resolve => setTimeout(resolve, 5000));
+
+  // Range Buttons initialization
   const rangeButtons = Array.prototype.slice.apply(document.querySelectorAll('.range-button'));
   rangeButtons.forEach(rb => {
     const range = rb.getAttribute('range');
     const selectedRange = range ? allRange.slice(-1 * range) : allRange;
-    rb.addEventListener('click', () => diagram.draw(selectedRange));
+    rb.addEventListener('click', () => {
+      dSlider.setPositionRange(allRange.length - selectedRange.length, allRange.length);
+      diagram.draw(selectedRange);
+    });
   });
 
+  // Draw section
   sliderDiagram.draw(allRange);
+
+  dSlider.setPositionRange(allRange.length - initRange.length, allRange.length);
+  dSlider.onChange((lowPosition, highPosition) => {
+    const selectedRange = allRange.slice(lowPosition, highPosition);
+    diagram.draw(selectedRange, true);
+  });
+  dSlider.enable();
+
   diagram.draw(initRange);
 })();
