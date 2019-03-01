@@ -77,6 +77,8 @@ class DoubleSlider {
    * Initiate all slider handlers
    */
   init() {
+    window.addEventListener('resize', this.onResize.bind(this));
+
     this.pointerLow.addEventListener('mousedown', this.onPointerLowStart);
     this.pointerLow.addEventListener('touchstart', this.onPointerLowStart);
 
@@ -101,6 +103,10 @@ class DoubleSlider {
 
   highPositionRange(position) {
     return DoubleSlider.range(position, this.minPositionDiff, this.maxPosition);
+  }
+
+  onResize() {
+    this.applyCoordinates();
   }
 
   onPointerLowStart() {
