@@ -78,6 +78,7 @@ class DoubleSlider {
    */
   init() {
     window.addEventListener('resize', this.onResize.bind(this));
+    this.controlArea.addEventListener('touchmove', e => e.preventDefault());
 
     this.pointerLow.addEventListener('mousedown', this.onPointerLowStart);
     this.pointerLow.addEventListener('touchstart', this.onPointerLowStart);
@@ -109,7 +110,7 @@ class DoubleSlider {
     this.applyCoordinates();
   }
 
-  onPointerLowStart() {
+  onPointerLowStart(e) {
     if (this.disabled) {
       return;
     }

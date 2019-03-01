@@ -27,6 +27,7 @@
   background: rgba(173, 255, 47, 0.2);
   transition: width 0.7s ease-out;
   -webkit-transition: width 0.7s ease-out;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .d-slider__control-area.active .d-slider__pointer {
