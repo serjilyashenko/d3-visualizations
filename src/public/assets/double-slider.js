@@ -83,7 +83,7 @@ class DoubleSlider {
     this.pointerLow.addEventListener('touchstart', this.onPointerLowStart);
 
     this.pointerHigh.addEventListener('mousedown', this.onPointerHighStart);
-    this.pointerHigh.addEventListener('touchstart', this.onPointerStart);
+    this.pointerHigh.addEventListener('touchstart', this.onPointerHighStart);
 
     this.applyCoordinates();
   }
@@ -113,16 +113,22 @@ class DoubleSlider {
     if (this.disabled) {
       return;
     }
+    this.controlArea.classList.add('active');
     this.controlArea.addEventListener('mousemove', this.onLowPointerMove);
+    this.controlArea.addEventListener('touchmove', this.onLowPointerMove);
     document.body.addEventListener('mouseup', this.onPointerEnd);
+    document.body.addEventListener('touchend', this.onPointerEnd);
   }
 
   onPointerHighStart() {
     if (this.disabled) {
       return;
     }
+    this.controlArea.classList.add('active');
     this.controlArea.addEventListener('mousemove', this.onHighPointerMove);
+    this.controlArea.addEventListener('touchmove', this.onHighPointerMove);
     document.body.addEventListener('mouseup', this.onPointerEnd);
+    document.body.addEventListener('touchend', this.onPointerEnd);
   }
 
   getMoveLowCoordinate(e) {
@@ -150,10 +156,15 @@ class DoubleSlider {
   }
 
   onPointerEnd() {
+    this.controlArea.classList.remove('active');
     this.controlArea.removeEventListener('mousemove', this.onLowPointerMove);
+    this.controlArea.removeEventListener('touchmove', this.onLowPointerMove);
     this.controlArea.removeEventListener('mousemove', this.onHighPointerMove);
+    this.controlArea.removeEventListener('touchmove', this.onHighPointerMove);
     document.body.removeEventListener('mouseup', this.onPointerLowEnd);
+    document.body.removeEventListener('touchend', this.onPointerLowEnd);
     document.body.removeEventListener('mouseup', this.onPointerHighEnd);
+    document.body.removeEventListener('touchend', this.onPointerHighEnd);
   }
 
   correctLowCoordinate() {

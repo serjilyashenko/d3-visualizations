@@ -29,7 +29,7 @@
   -webkit-transition: width 0.7s ease-out;
 }
 
-.d-slider__control-area:active .d-slider__pointer {
+.d-slider__control-area.active .d-slider__pointer {
   transition: none;
   -webkit-transition: none;
 }
