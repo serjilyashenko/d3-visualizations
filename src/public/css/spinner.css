@@ -1,0 +1,13 @@
+.spinner {
+  background: url('/img/spinner.gif');
+  background-size: contain;
+  position: absolute;
+  top: calc(50% - 30px);
+  left: calc(50% - 30px);
+  width: 60px;
+  height: 60px;
+  margin: 30px 35px;
+  transition: opacity 0.7s;
+  pointer-events: none;
+  opacity: 1;
+}
