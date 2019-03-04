@@ -67,7 +67,7 @@ class ScalesDiagram {
   }
 
   resizeElements() {
-    this.updateElements(this.elements);
+    this.elements && this.updateElements(this.elements);
   }
 
   xExtent(data) {

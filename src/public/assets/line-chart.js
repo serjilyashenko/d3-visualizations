@@ -55,7 +55,7 @@ class LineChart extends ScalesDiagram {
       elements = elements.transition();
     }
 
-    elements.attr('d', this.line(this.data));
+    this.elements = elements.attr('d', this.line(this.data));
   }
 
   firstDraw() {
@@ -84,6 +84,8 @@ class LineChart extends ScalesDiagram {
       .attr('stroke-linejoin', 'round')
       .attr('stroke-linecap', 'round')
       .attr('stroke-width', 1.5);
+
+    console.log('!!!', this.elements);
 
     if (!this.elements) {
       const newElements = this.createElements(elements);
