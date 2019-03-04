@@ -85,8 +85,6 @@ class LineChart extends ScalesDiagram {
       .attr('stroke-linecap', 'round')
       .attr('stroke-width', 1.5);
 
-    console.log('!!!', this.elements);
-
     if (!this.elements) {
       const newElements = this.createElements(elements);
       this.elements = newElements;

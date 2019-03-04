@@ -1,8 +1,9 @@
 /* global Margin, LineChart, ScaleLine */
 
+// Coin stars diagram
 (async function() {
   const sliderLineMargin = new Margin(1, 0, 1, 0);
-  const diagramMargin = new Margin(50, 10, 20, 60);
+  const diagramMargin = new Margin(30, 10, 20, 40);
   const sliderDiagram = new ScaleLine('#chart-slider-area', sliderLineMargin, d => new Date(d.key), d => d.value);
   const diagram = new LineChart('#coin-stars-chart-area', diagramMargin, d => new Date(d.key), d => d.value);
 
@@ -43,4 +44,16 @@
   dSlider.enable();
 
   diagram.draw(initRange);
+})();
+
+// Active Currency section
+(async function() {
+  const btcURL = 'https://api.coindesk.com/v1/bpi/currentprice.json';
+  const btcData = await d3.json(btcURL);
+
+  const btcDate = d3.timeFormat('%d %b %Y, %H:%M %p')(new Date(btcData.time.updatedISO));
+  const btcRate = btcData.bpi.USD.rate;
+
+  const btcRateHTML = `1BTC = ${btcRate}$ (for ${btcDate})`;
+  document.getElementById('btc-date').innerHTML = btcRateHTML;
 })();

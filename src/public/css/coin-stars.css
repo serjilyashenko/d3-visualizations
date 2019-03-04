@@ -11,7 +11,7 @@
 
 .d-slider-wrapper {
   height: 60px;
-  margin-left: 60px;
+  margin-left: 40px;
   border: 1px solid #777;
 }
 
@@ -38,4 +38,14 @@
 .range-button:hover {
   background-color: white;
   color: black;
+}
+
+.active-currency {
+  padding: 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.active-currency__selector {
+  font-size: 17px;
 }

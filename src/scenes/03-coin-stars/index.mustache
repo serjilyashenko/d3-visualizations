@@ -10,7 +10,14 @@
 
 <body>
   {{> ../partials/header}}
-  <h1 class="chart-title">Coin Stars - BTC (in development)</h1>
+  <div class="active-currency">
+    <h1 class="chart-title">Coin Stars</h1>
+    <select class="active-currency__selector">
+      <option id="btc-date" value="btc"></option>
+      <option id="eth-date" value="eth">ETH (in development)</option>
+      <option id="eur-date" value="usd">EUR (in development)</option>
+    </select>
+  </div>
   <div id="coin-stars-chart-area" class="coin-stars-chart-area"></div>
     <div class="d-slider-wrapper">
       <div id="d-slider" class="d-slider">
