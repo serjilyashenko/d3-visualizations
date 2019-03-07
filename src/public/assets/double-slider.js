@@ -213,6 +213,12 @@ class DoubleSlider {
     this.applyCoordinates();
   }
 
+  setMaxPositionRange(minPosition, maxPosition) {
+    this.minPosition = minPosition;
+    this.maxPosition = maxPosition;
+    this.applyCoordinates();
+  }
+
   /**
    * Apply new low coordinate to slider DOM element
    * @param {number} coordinate - The Low Slider coordinate (px)

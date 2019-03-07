@@ -55,7 +55,7 @@ class LineChart extends ScalesDiagram {
       elements = elements.transition();
     }
 
-    this.elements = elements.attr('d', this.line(this.data));
+    elements.attr('d', this.line(this.data));
   }
 
   firstDraw() {
