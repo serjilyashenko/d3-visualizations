@@ -9,7 +9,7 @@ Visualizations are responsive and interactive.
 - GapMinder
 - Coin Stars
 
-![Demo Image](./demo-images/gapminder.png)
+![Demo Image](./demo-images/coinstars.gif)
 
 **Note:** The application is a demonstration instance. It works correctly in modern Chrome.
 
