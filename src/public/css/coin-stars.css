@@ -43,9 +43,19 @@
 .active-currency {
   padding: 10px 0 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .active-currency__selector {
-  font-size: 17px;
+  font-size: 14px;
+}
+
+@media only screen and (min-width: 668px) {
+  .active-currency {
+    justify-content: space-between;
+  }
+
+  .active-currency__selector {
+    font-size: 17px;
+  }
 }

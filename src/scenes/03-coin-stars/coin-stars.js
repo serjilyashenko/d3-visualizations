@@ -37,7 +37,7 @@
         return d3
           .map(eurData.rates)
           .entries()
-          .map(it => ({ ...it, value: it.value.USD }))
+          .map(it => Object.assign({}, it, { value: it.value.USD }))
           .sort((a, b) => (a.key > b.key ? 1 : -1));
       }
     }

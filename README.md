@@ -2,6 +2,8 @@
 
 Application test drive is [here](https://d3visualizations.herokuapp.com/).
 
+Visualizations are responsive and interactive.
+
 - Bar Chart
 - Scatter Plot
 - GapMinder
