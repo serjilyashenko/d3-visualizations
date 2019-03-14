@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {{> ../partials/head}}
+  <link rel="stylesheet" type="text/css" href="/css/spinner.css">
+  <style>
+    .graticule {
+      fill: none;
+      stroke: #777;
+      stroke-width: .5px;
+      stroke-opacity: .5;
+    }
+
+    .land {
+      fill: #999;
+    }
+
+    .boundary {
+      fill: none;
+      stroke: #fff;
+      stroke-width: .5px;
+    }
+  </style>
+</head>
+
+<body>
+  {{> ../partials/header}}
+  <h1 class="chart-title">Geo Projection</h1>
+  <div class="spinner"></div>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+  <script src="https://d3js.org/topojson.v2.min.js"></script>
+  <script src="geo-projection.js"></script>
+  {{> ../partials/footer}}
+</body>
+
+</html>
