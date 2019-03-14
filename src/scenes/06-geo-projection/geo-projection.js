@@ -2,9 +2,12 @@ setTimeout(() => (document.querySelector('.spinner').style.opacity = 0), 1000);
 
 (function() {
   const MAX_WIDTH = 1200;
+  const SCALE_IND = 6.2;
+  const HEIGHT_IND = 1.5;
+
   const container = d3.select('.container.container_main .main-content');
   const width = container.node().getBoundingClientRect().width;
-  const height = width / 1.5;
+  const height = width / HEIGHT_IND;
   const scale = width / MAX_WIDTH;
 
   const projection = d3
@@ -13,7 +16,7 @@ setTimeout(() => (document.querySelector('.spinner').style.opacity = 0), 1000);
     // .geoGilbert()
     // .geoAiry()
     // .geoAitoff()
-    .scale(width / 6.4)
+    .scale(width / SCALE_IND)
     .translate([width / 2, height / 2])
     .precision(0.1);
 
@@ -31,8 +34,7 @@ setTimeout(() => (document.querySelector('.spinner').style.opacity = 0), 1000);
     .append('path')
     .datum(graticule)
     .attr('class', 'graticule')
-    .attr('d', path)
-    .attr('transform', `scale(${scale})`);
+    .attr('d', path);
 
   d3.json('world-110m.v1.json', function(error, world) {
     if (error) throw error;
@@ -41,25 +43,25 @@ setTimeout(() => (document.querySelector('.spinner').style.opacity = 0), 1000);
       .append('path')
       .datum(topojson.feature(world, world.objects.land))
       .attr('class', 'land')
-      .attr('d', path)
-      .attr('transform', `scale(${scale})`);
+      .attr('d', path);
 
     const boundary = svg
       .append('path')
       .datum(topojson.mesh(world, world.objects.countries), (a, b) => a !== b)
       .attr('class', 'boundary')
-      .attr('d', path)
-      .attr('transform', `scale(${scale})`);
+      .attr('d', path);
 
     const onResize = () => {
       const width = container.node().getBoundingClientRect().width;
-      const scale = width / MAX_WIDTH;
-      const height = width / 1.5;
+      const height = width / HEIGHT_IND;
+
+      const newProjection = projection.scale(width / SCALE_IND).translate([width / 2, height / 2]);
+      const newPath = d3.geoPath().projection(newProjection);
 
       svg.attr('height', height);
-      grid.attr('transform', `scale(${scale})`);
-      land.attr('transform', `scale(${scale})`);
-      boundary.attr('transform', `scale(${scale})`);
+      grid.attr('d', newPath);
+      land.attr('d', newPath);
+      boundary.attr('d', newPath);
     };
 
     window.addEventListener('resize', onResize);
