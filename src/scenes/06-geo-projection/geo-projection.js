@@ -39,17 +39,31 @@ setTimeout(() => (document.querySelector('.spinner').style.opacity = 0), 1000);
   d3.json('world-110m.v1.json', function(error, world) {
     if (error) throw error;
 
-    const land = svg
-      .append('path')
-      .datum(topojson.feature(world, world.objects.land))
-      .attr('class', 'land')
-      .attr('d', path);
+    console.log('>>', world);
+    console.log('>> ', topojson.feature(world, world.objects.countries));
+
+    // const land = svg
+    //   .append('path')
+    //   .datum(topojson.feature(world, world.objects.land))
+    //   .attr('class', 'land')
+    //   .attr('d', path);
 
     const boundary = svg
+      .append('g')
+      .selectAll('path')
+      .data(topojson.feature(world, world.objects.countries).features)
+      .enter()
       .append('path')
-      .datum(topojson.mesh(world, world.objects.countries), (a, b) => a !== b)
       .attr('class', 'boundary')
-      .attr('d', path);
+      .attr('d', path)
+      .attr('stroke', '#fff')
+      .attr('stroke-width', '.5px')
+      .attr('fill', d => {
+        if (Number(d.id) === 76) {
+          return 'green';
+        }
+        return '#999';
+      });
 
     const onResize = () => {
       const width = container.node().getBoundingClientRect().width;
@@ -60,7 +74,7 @@ setTimeout(() => (document.querySelector('.spinner').style.opacity = 0), 1000);
 
       svg.attr('height', height);
       grid.attr('d', newPath);
-      land.attr('d', newPath);
+      // land.attr('d', newPath);
       boundary.attr('d', newPath);
     };
 
