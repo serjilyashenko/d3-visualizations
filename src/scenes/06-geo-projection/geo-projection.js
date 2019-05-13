@@ -48,6 +48,8 @@ setTimeout(() => (document.querySelector('.spinner').style.opacity = 0), 1000);
     //   .attr('class', 'land')
     //   .attr('d', path);
 
+    let selectedId = null;
+
     const boundary = svg
       .append('g')
       .selectAll('path')
@@ -58,12 +60,21 @@ setTimeout(() => (document.querySelector('.spinner').style.opacity = 0), 1000);
       .attr('d', path)
       .attr('stroke', '#fff')
       .attr('stroke-width', '.5px')
-      .attr('fill', d => {
-        if (Number(d.id) === 76) {
+      .on('click', d => {
+        selectedId = d.id;
+        onRedrawBoundary();
+      });
+
+    const onRedrawBoundary = () => {
+      boundary.attr('fill', d => {
+        if (d.id === selectedId) {
           return 'green';
         }
         return '#999';
       });
+    };
+
+    onRedrawBoundary();
 
     const onResize = () => {
       const width = container.node().getBoundingClientRect().width;
