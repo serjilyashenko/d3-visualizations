@@ -1,6 +1,4 @@
-setTimeout(() => (document.querySelector('.spinner').style.opacity = 0), 1000);
-
-(function() {
+(async function() {
   const MAX_WIDTH = 1200;
   const SCALE_IND = 6.2;
   const HEIGHT_IND = 1.5;
@@ -36,59 +34,60 @@ setTimeout(() => (document.querySelector('.spinner').style.opacity = 0), 1000);
     .attr('class', 'graticule')
     .attr('d', path);
 
-  d3.json('world-110m.v1.json', function(error, world) {
-    if (error) throw error;
+  const [world, countryNames] = await Promise.all([
+    d3.json('world-110m.v1.json'),
+    d3.tsv('world-110m-country-names.tsv', 'tsv')
+  ]);
 
-    console.log('>>', world);
-    console.log('>> ', topojson.feature(world, world.objects.countries));
+  const countryMap = countryNames.reduce((res, country) => ({ ...res, [country.id]: country.name }), {});
+  const countries = topojson
+    .feature(world, world.objects.countries)
+    .features.map(d => ({ ...d, name: countryMap[Number(d.id)] }));
 
-    // const land = svg
-    //   .append('path')
-    //   .datum(topojson.feature(world, world.objects.land))
-    //   .attr('class', 'land')
-    //   .attr('d', path);
+  document.querySelector('.spinner').style.opacity = 0;
 
-    let selectedId = null;
+  let selectedId = null;
 
-    const boundary = svg
-      .append('g')
-      .selectAll('path')
-      .data(topojson.feature(world, world.objects.countries).features)
-      .enter()
-      .append('path')
-      .attr('class', 'boundary')
-      .attr('d', path)
-      .attr('stroke', '#fff')
-      .attr('stroke-width', '.5px')
-      .on('click', d => {
-        selectedId = d.id;
-        onRedrawBoundary();
-      });
+  const boundary = svg
+    .append('g')
+    .selectAll('path')
+    .data(countries)
+    .enter()
+    .append('path')
+    .attr('class', 'boundary')
+    .attr('d', path)
+    .attr('stroke', '#fff')
+    .attr('stroke-width', '.5px')
+    .on('click', d => {
+      selectedId = d.id;
+      document.querySelector('.country-name').innerHTML = ` - ${d.name}`;
+      onRedrawBoundary();
+    });
 
-    const onRedrawBoundary = () => {
-      boundary.attr('fill', d => {
-        if (d.id === selectedId) {
-          return 'green';
-        }
-        return '#999';
-      });
-    };
+  const onRedrawBoundary = () => {
+    boundary.attr('fill', d => {
+      if (d.id === selectedId) {
+        console.log('>> ', d.id, d.name);
+        return 'green';
+      }
+      return '#999';
+    });
+  };
 
-    onRedrawBoundary();
+  onRedrawBoundary();
 
-    const onResize = () => {
-      const width = container.node().getBoundingClientRect().width;
-      const height = width / HEIGHT_IND;
+  const onResize = () => {
+    const width = container.node().getBoundingClientRect().width;
+    const height = width / HEIGHT_IND;
 
-      const newProjection = projection.scale(width / SCALE_IND).translate([width / 2, height / 2]);
-      const newPath = d3.geoPath().projection(newProjection);
+    const newProjection = projection.scale(width / SCALE_IND).translate([width / 2, height / 2]);
+    const newPath = d3.geoPath().projection(newProjection);
 
-      svg.attr('height', height);
-      grid.attr('d', newPath);
-      // land.attr('d', newPath);
-      boundary.attr('d', newPath);
-    };
+    svg.attr('height', height);
+    grid.attr('d', newPath);
+    // land.attr('d', newPath);
+    boundary.attr('d', newPath);
+  };
 
-    window.addEventListener('resize', onResize);
-  });
+  window.addEventListener('resize', onResize);
 })();

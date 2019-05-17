@@ -29,12 +29,13 @@
 
 <body>
   {{> ../partials/header}}
-  <h1 class="chart-title">Geo Projection</h1>
+  <h1 class="chart-title">Geo Projection <span class="country-name"></span></h1>
   <div class="spinner"></div>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="https://d3js.org/d3-geo.v1.min.js"></script>
   <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
   <script src="https://d3js.org/topojson.v2.min.js"></script>
+  <script src="/assets/d3-fetch-polyfill.js"></script>
   <script src="geo-projection.js"></script>
   {{> ../partials/footer}}
 </body>

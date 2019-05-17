@@ -9,7 +9,7 @@ const paths = {
   templates: './src/scenes/**/*.mustache',
   partials: './src/partials/**/*.mustache',
   scripts: './src/scenes/**/*.js',
-  data: './src/scenes/**/*.json',
+  data: ['./src/scenes/**/*.json', './src/scenes/**/*.tsv'],
   public: './src/public/**/*'
 };
 
