@@ -39,10 +39,10 @@
     d3.tsv('world-110m-country-names.tsv', 'tsv')
   ]);
 
-  const countryMap = countryNames.reduce((res, country) => ({ ...res, [country.id]: country.name }), {});
+  const countryMap = countryNames.reduce((res, country) => Object.assign({}, res, { [country.id]: country.name }), {});
   const countries = topojson
     .feature(world, world.objects.countries)
-    .features.map(d => ({ ...d, name: countryMap[Number(d.id)] }));
+    .features.map(d => Object.assign({}, d, { name: countryMap[Number(d.id)] }));
 
   document.querySelector('.spinner').style.opacity = 0;
 
