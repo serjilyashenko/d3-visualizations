@@ -44,6 +44,10 @@
     .feature(world, world.objects.countries)
     .features.map(d => Object.assign({}, d, { name: countryMap[Number(d.id)] }));
 
+  const randomIndex = Math.floor(Math.random() * countries.length);
+  const questionCountry = countries[randomIndex];
+
+  document.querySelector('.question-country').innerHTML = questionCountry.name;
   document.querySelector('.spinner').style.opacity = 0;
 
   let selectedId = null;
@@ -60,7 +64,11 @@
     .attr('stroke-width', '.5px')
     .on('click', d => {
       selectedId = d.id;
-      document.querySelector('.country-name').innerHTML = ` - ${d.name}`;
+      if (d.id === questionCountry.id) {
+        document.querySelector('.answer-country').innerHTML = `Weee! You are right!`;
+      } else {
+        document.querySelector('.answer-country').innerHTML = `No. This is ${d.name}`;
+      }
       onRedrawBoundary();
     });
 
