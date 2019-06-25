@@ -56,11 +56,11 @@
     const optionHTML = `1${curr.name} = ${rate}$ (for ${date})`;
     const option = document.createElement('option');
     option.innerHTML = optionHTML;
-    option.setAttribute('value', index);
+    option.setAttribute('value', curr.name);
     selector.appendChild(option);
   }
 
-  const cache = [];
+  const cache = {};
   let allRange;
   let activeRange;
 
@@ -87,13 +87,13 @@
   });
 
   // Apply selected currency
-  async function setCurrency(index) {
-    if (!cache[index]) {
+  async function setCurrency(value) {
+    if (!cache[value]) {
       document.querySelector('.spinner').style.opacity = 1;
-      cache[index] = await currencies[index].fetchData();
+      cache[value] = await currencies.find(curr => curr.name === value).fetchData();
       document.querySelector('.spinner').style.opacity = 0;
     }
-    allRange = cache[index];
+    allRange = cache[value];
     activeRange = allRange.slice(-1 * 180);
 
     dSlider.setMaxPositionRange(0, allRange.length);
@@ -104,6 +104,12 @@
     diagram.draw(activeRange);
   }
 
-  selector.addEventListener('change', () => setCurrency(selector.value));
-  setCurrency(0);
+  selector.addEventListener('change', () => {
+    setCurrency(selector.value);
+    analytics.track(`Change Currency to ${selector.value}`, {
+      title: 'Change Currency',
+      course: 'Intro to Analytics',
+    });
+  });
+  setCurrency(currencies[0].name);
 })();
