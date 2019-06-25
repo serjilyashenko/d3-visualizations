@@ -4,6 +4,28 @@ const gulp = require('gulp');
 const browserSync = require('browser-sync').create();
 const mustache = require('gulp-mustache');
 
+function getLocalConfig() {
+  try {
+    const config = require('config-yml');
+    return config;
+  } catch (e) {
+    console.warn(e);
+  }
+}
+
+function getProdConfig() {
+  const { SEGMENT_IO } = process.env;
+  return { SEGMENT_IO }
+}
+
+const env = ['production'].find(v => v === process.env.NODE_ENV) || 'local';
+const configSet = env === 'local' ? getLocalConfig() : getProdConfig();
+const segmentKey = configSet ? configSet.SEGMENT_IO : null;
+
+if (!segmentKey) {
+  console.warn('>> segment io key not found');
+}
+
 const paths = {
   output: './dist',
   templates: './src/scenes/**/*.mustache',
@@ -20,7 +42,7 @@ function clean() {
 function templates() {
   return gulp
     .src(paths.templates)
-    .pipe(mustache({ version: packageJson.version }, { extension: '.html' }))
+    .pipe(mustache({ version: packageJson.version, segmentKey }, { extension: '.html' }))
     .pipe(gulp.dest(paths.output));
 }
 

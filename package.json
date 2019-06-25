@@ -3,7 +3,7 @@
   "version": "1.1.2",
   "description": "Visualization Samples Using D3 library",
   "engines": {
-    "node": "8.11.4"
+    "node": "10.16.0"
   },
   "private": true,
   "repository": {
@@ -23,6 +23,7 @@
     "gulp:build": "gulp"
   },
   "dependencies": {
+    "config-yml": "0.10.3",
     "http-server": "0.11.1"
   },
   "devDependencies": {

@@ -15,9 +15,11 @@ Visualizations are responsive and interactive.
 
 ## Table of Contents
 
-- [Installation](#instalation)
-- [Production Mode](#production_mode)
-- [Development Mode](#development_mode)
+- [Installation](#installation)
+- [Production Mode](#production-mode)
+- [Development Mode](#development-mode)
+- [Tracking](#tracking)
+
 
 ## Installation
 
@@ -71,4 +73,16 @@ or
 
 ```
 npm run dev
+```
+
+## Tracking
+
+You also can use Segment IO to track user activity. Provide `config.yml` like this:
+```
+SEGMENT_IO: <your_segment_io_key>
+```
+or pass to `process.end` next params:
+```
+NODE_ENV=production
+SEGMENT_IO=<your_segment_io_key>
 ```
