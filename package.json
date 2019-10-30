@@ -28,7 +28,7 @@
     "lodash": "^4.17.13"
   },
   "devDependencies": {
-    "browser-sync": "2.24.7",
+    "browser-sync": "2.26.7",
     "del": "3.0.0",
     "gulp": "4.0.0",
     "gulp-mustache": "3.0.1"
