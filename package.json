@@ -24,7 +24,8 @@
   },
   "dependencies": {
     "config-yml": "0.10.3",
-    "http-server": "0.11.1"
+    "http-server": "0.11.1",
+    "lodash": "^4.17.13"
   },
   "devDependencies": {
     "browser-sync": "2.24.7",
