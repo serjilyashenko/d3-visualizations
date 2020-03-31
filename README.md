@@ -4,6 +4,7 @@ Application test drive is [here](https://d3visualizations.herokuapp.com/).
 
 Visualizations are responsive and interactive.
 
+- COVID-19 (Actual cases of the covid-19 epidemic 2020)
 - Bar Chart
 - Scatter Plot
 - GapMinder

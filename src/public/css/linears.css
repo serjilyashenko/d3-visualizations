@@ -1,4 +1,4 @@
-.coin-stars-chart-area {
+.coin-stars-chart-area, .covid-19-chart-area {
   position: relative;
   height: 60vh;
   max-height: 500px;
@@ -46,7 +46,7 @@
   justify-content: center;
 }
 
-.active-currency__selector {
+.active-currency__selector, .cases-type__selector {
   font-size: 14px;
 }
 
@@ -55,7 +55,7 @@
     justify-content: space-between;
   }
 
-  .active-currency__selector {
+  .active-currency__selector, .cases-type__selector {
     font-size: 17px;
   }
 }

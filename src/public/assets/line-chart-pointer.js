@@ -24,6 +24,7 @@ class LineChartPointer {
     const scales = this.getScales();
     this.tooltip = new Tooltip(scales.selector, margin);
     this.bisectDate = d3.bisector(scales.xSelector).left;
+    this.strokeColor = '#118c11ab';
 
     this.hideFocus = this.hideFocus.bind(this);
     this.handlePointerMove = this.handlePointerMove.bind(this);
@@ -53,6 +54,11 @@ class LineChartPointer {
     this.hideFocus();
   }
 
+  setStrokeColor(color) {
+    this.strokeColor = color;
+    this.initPointer();
+  }
+
   initFocus() {
     const scales = this.getScales();
     this.focus = this.diagram.append('g');
@@ -71,7 +77,7 @@ class LineChartPointer {
       .attr('x', 15)
       .attr('dy', '.31em')
       .style('display', 'none');
-    const circles = [new Circle('#00800080', 7), new Circle('white', 5), new Circle('green', 4)];
+    const circles = [new Circle(this.strokeColor, 7), new Circle('white', 5), new Circle(this.strokeColor, 4)];
     this.focus
       .selectAll('circle')
       .data(circles)
@@ -91,8 +97,8 @@ class LineChartPointer {
     const tooltipData = {
       x,
       y,
-      btcRate: scales.ySelector(d),
-      dateObj: new Date(d.key)
+      value: scales.ySelector(d),
+      dateObj: scales.xSelector(d)
     };
     this.showTooltip(tooltipData);
 
@@ -114,14 +120,19 @@ class LineChartPointer {
     this.tooltip.remove();
   }
 
-  showTooltip({ x, y, btcRate, dateObj }) {
+  renderTooltipText(value) {
+    return `<div>1BTC = <span class="label">${value}$</div>`;
+  }
+
+  showTooltip({ x, y, value, dateObj }) {
     const date = dateObj.getDate();
     const month = dateObj.toLocaleString('en-us', { month: 'short' });
     const year = dateObj.getFullYear();
+    const tooltipText = this.renderTooltipText(value);
     const tooltipHTML = `
     <div class="content">
       <div><b>${date} ${month} ${year}</b></div>
-      <div>1BTC = <span class="label">${btcRate}$</div>
+      ${tooltipText}
     </span></div>
     `;
     this.tooltip.setLeftPosition().render(x, y, tooltipHTML);

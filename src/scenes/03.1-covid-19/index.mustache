@@ -11,11 +11,9 @@
 <body>
   {{> ../partials/header}}
   <div class="active-currency">
-    <h1 class="chart-title">Coin Stars</h1>
-    <select id="currency-selector" class="active-currency__selector">
-    </select>
+    <h1 class="chart-title">COVID-19 cases</h1>
   </div>
-  <div id="coin-stars-chart-area" class="coin-stars-chart-area"></div>
+  <div id="covid-19-chart-area" class="covid-19-chart-area"></div>
     <div class="d-slider-wrapper">
       <div id="d-slider" class="d-slider">
         <div class="d-slider__bar">
@@ -28,11 +26,13 @@
       </div>
     </div>
     <div class="controls">
+      <button class="range-button" range="3">3d</button>
+      <button class="range-button" range="7">1w</button>
+      <button class="range-button" range="14">2w</button>
+      <button class="range-button" range="21">3w</button>
       <button class="range-button" range="30">1m</button>
-      <button class="range-button" range="90">3m</button>
-      <button class="range-button" range="180">6m</button>
+      <button class="range-button" range="60">2m</button>
       <button class="range-button" range="365">1y</button>
-      <button class="range-button" range="730">2y</button>
       <button class="range-button" range=>all</button>
     </div>
   </div>
@@ -46,7 +46,7 @@
   <script src="/assets/line-chart-pointer.js"></script>
   <script src="/assets/line-chart.js"></script>
   <script src="/assets/double-slider.js"></script>
-  <script src="coin-stars.js"></script>
+  <script src="covid-19.js"></script>
   {{> ../partials/footer}}
 </body>
 

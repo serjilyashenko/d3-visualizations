@@ -23,6 +23,7 @@ class LineChart extends ScalesDiagram {
     });
     const getData = () => this.data || null;
 
+    this.strokeColor = '#118c11ab';
     this.axis = new Axis(this.diagram, getScales);
     this.pointer = new LineChartPointer(this.diagram, margin, getScales, getData);
   }
@@ -30,6 +31,11 @@ class LineChart extends ScalesDiagram {
   initScales() {
     super.initScales();
     this.xScale = d3.scaleTime().range([0, this.width]);
+  }
+
+  setStrokeColor(color) {
+    this.strokeColor = color;
+    this.pointer.setStrokeColor(color);
   }
 
   handleResize(...attrs) {
@@ -80,7 +86,7 @@ class LineChart extends ScalesDiagram {
       .append('path')
       .attr('class', 'line')
       .attr('fill', 'none')
-      .attr('stroke', '#118c11ab')
+      .attr('stroke', this.strokeColor)
       .attr('stroke-linejoin', 'round')
       .attr('stroke-linecap', 'round')
       .attr('stroke-width', 1.5);

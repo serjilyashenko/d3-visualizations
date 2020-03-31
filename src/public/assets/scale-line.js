@@ -41,6 +41,7 @@ class ScaleLine extends ScalesDiagram {
   }
 
   draw(data) {
+    const strokeColor = this.strokeColor || '#118c11ab';
     super.draw(data);
 
     this.data = data;
@@ -49,7 +50,7 @@ class ScaleLine extends ScalesDiagram {
       .append('path')
       .attr('class', 'line')
       .attr('fill', 'none')
-      .attr('stroke', '#118c11ab')
+      .attr('stroke', strokeColor)
       .attr('stroke-linejoin', 'round')
       .attr('stroke-linecap', 'round')
       .attr('stroke-width', lineWidth);
